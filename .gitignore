@@ -1,0 +1,4 @@
+#ignore vim backups
+*~
+#python stuff
+__pycache__
