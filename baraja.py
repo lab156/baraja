@@ -155,6 +155,23 @@ class Mano(frozenset):
     def __repr__(self):
         return ','.join([Naipe(naipe).__str__() for naipe in self])
 
+    @classmethod
+    def new(self, lst):
+        '''
+        A smart contructor of Mano
+        is able to determine anything that Naipe understands
+        '''
+        if all(isinstance(n, int) for n in lst):
+            mano = Mano([p.get_as_tuple() for p in map(Naipe.from_int, lst )])
+        elif all(isinstance(n, tuple) for n in lst):
+            mano = Mano(lst)
+        elif all(isinstance(n, Naipe) for n in lst):
+            mano = Mano([p.get_as_tuple() for p in lst])
+        else:
+            raise(ValueError('Los valores de la lista estan mal'))
+        return mano
+
+
     @check_has_5_cards
     def is_jacks_or_better(self):
         '''
@@ -336,7 +353,7 @@ class Baraja():
         self._cnt_ += n
         return Mano(self._cartas_[N:(n + N)])
 
-    def sacar_lista_naipes(self,n):
+    def sacar_lista_naipes(self,n, start_at_0=False):
         '''Retorna una lista de Naipes. A diferencia de 
         sacar_mano que retorna un elemento tipo mano 
         (con elementos tuples), esta funcion retorna una

@@ -145,4 +145,12 @@ class BasicResults(ut.TestCase):
         lim_sup = 0.5*xi2(1 - alfa/2, 2*K + 2)
         print("Probando haber si: %s < %s < %s"%(lim_inf,lam,lim_sup))
         self.assertTrue(lim_inf < lam < lim_sup)
+    
+    def test_Mano_new(self):
+        m1 = Mano.new([0,1,2,3])
+        m2 = Mano.new([(1,0),(2,0),(3,0),(4,0)])
+        m3 = Mano.new(list(map(Naipe, m2)))
+        self.assertEqual(m1 ,  m2)
+        self.assertEqual(m1 ,  m3)
+
 
