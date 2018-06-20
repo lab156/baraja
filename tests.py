@@ -153,4 +153,16 @@ class BasicResults(ut.TestCase):
         self.assertEqual(m1 ,  m2)
         self.assertEqual(m1 ,  m3)
 
+    def test_repr_image_name(self):
+        B = Baraja().sacar_lista_naipes(52)
+        name_str = ''' 10C.png  2H.png  4C.png  5H.png  7C.png  8H.png  AC.png    JD.png  KS.png
+10D.png  2S.png  4D.png  5S.png  7D.png  8S.png  AD.png    JH.png  QC.png
+10H.png  3C.png  4H.png  6C.png  7H.png  9C.png  AH.png    JS.png  QD.png
+10S.png  3D.png  4S.png  6D.png  7S.png  9D.png  AS.png    KC.png  QH.png
+2C.png   3H.png  5C.png  6H.png  8C.png  9H.png  back.png  KD.png  QS.png
+2D.png   3S.png  5D.png  6S.png  8D.png  9S.png  JC.png    KH.png'''
+
+        for n in B:
+            self.assertTrue(n.repr_image_name() in name_str)
+
 

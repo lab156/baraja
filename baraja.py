@@ -65,6 +65,26 @@ class Naipe():
     def is_diamonds(self):
         return self.palo == 3
 
+    def repr_image_name(self):
+        '''
+        This function returns the name of the image which has this format
+        10C.png  2H.png  4C.png  5H.png  7C.png  8H.png  AC.png    JD.png  KS.png
+10D.png  2S.png  4D.png  5S.png  7D.png  8S.png  AD.png    JH.png  QC.png
+10H.png  3C.png  4H.png  6C.png  7H.png  9C.png  AH.png    JS.png  QD.png
+10S.png  3D.png  4S.png  6D.png  7S.png  9D.png  AS.png    KC.png  QH.png
+2C.png   3H.png  5C.png  6H.png  8C.png  9H.png  back.png  KD.png  QS.png
+2D.png   3S.png  5D.png  6S.png  8D.png  9S.png  JC.png    KH.png
+        '''
+        if self.is_spades():
+            palo = 'S'
+        if self.is_hearts():
+            palo = 'H'
+        if self.is_clovers():
+            palo = 'C'
+        if self.is_diamonds():
+            palo = 'D'
+        return self.repr_numero() + palo
+
     def get_successor(self):
         '''
         Retorna el sucesor de una carta si es A retorna 2
@@ -358,6 +378,9 @@ class Baraja():
         sacar_mano que retorna un elemento tipo mano 
         (con elementos tuples), esta funcion retorna una
         lista con elementos tipo Naipe'''
-        N = self._cnt_
+        if start_at_0:
+            N = 0
+        else:
+            N = self._cnt_
         self._cnt_ += n
         return [Naipe(carta) for carta in self._cartas_[N:(n + N)]]
