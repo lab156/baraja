@@ -382,5 +382,5 @@ class Baraja():
             N = 0
         else:
             N = self._cnt_
-        self._cnt_ += n
+            self._cnt_ += n
         return [Naipe(carta) for carta in self._cartas_[N:(n + N)]]

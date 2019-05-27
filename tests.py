@@ -165,4 +165,11 @@ class BasicResults(ut.TestCase):
         for n in B:
             self.assertTrue(n.repr_image_name() in name_str)
 
+    def test_sacar_lista_naipes(self):
+        B = Baraja()
+        self.assertEqual(len(B.sacar_lista_naipes(26)) , 26)
+        self.assertEqual(len(B.sacar_lista_naipes(26)) , 26)
+        self.assertEqual(len(B.sacar_lista_naipes(26)) , 0)
+
+
 
