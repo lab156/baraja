@@ -143,7 +143,7 @@ class BasicResults(ut.TestCase):
                 K += 1
         lim_inf = 0.5*xi2(alfa/2, 2*K)
         lim_sup = 0.5*xi2(1 - alfa/2, 2*K + 2)
-        print("Probando haber si: %s < %s < %s"%(lim_inf,lam,lim_sup))
+        print("Probando a ver si: %s < %s < %s"%(lim_inf,lam,lim_sup))
         self.assertTrue(lim_inf < lam < lim_sup)
     
     def test_Mano_new(self):
