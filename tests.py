@@ -171,5 +171,11 @@ class BasicResults(ut.TestCase):
         self.assertEqual(len(B.sacar_lista_naipes(26)) , 26)
         self.assertEqual(len(B.sacar_lista_naipes(26)) , 0)
 
+    def test_preview_length(self):
+        B = Baraja()
+        B.preview()
+        self.assertEqual(len(B.preview()), 10)
+
+
 
 

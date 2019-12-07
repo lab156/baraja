@@ -364,7 +364,7 @@ class Baraja():
                 return True
         else:
             return False
-        
+
     def sacar_mano(self,n):
         '''Retorna una mano (tuple) de tamano n del 
         principio de la baraja'''
@@ -388,4 +388,4 @@ class Baraja():
         """
         For debugging purposes: returns a console friendly list of the firs num naipes in the baraja without updating _cnt_
         """
-        return [n.repr_image_name() for n in self._cartas_[:num]]
+        return [Naipe(n).repr_image_name() for n in self._cartas_[:num]]
