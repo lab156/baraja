@@ -150,7 +150,6 @@ def check_has_5_cards(f):
         return f(self)
     return wrapper
 
-    
 class Mano(frozenset):
     '''Una mano de naipes, deberia de incluir las rutinas que tipicamente
     no involucran toda la baraja y en donde el orden no es muy importante.
@@ -384,3 +383,9 @@ class Baraja():
             N = self._cnt_
             self._cnt_ += n
         return [Naipe(carta) for carta in self._cartas_[N:(n + N)]]
+
+    def preview(self, num=10):
+        """
+        For debugging purposes: returns a console friendly list of the firs num naipes in the baraja without updating _cnt_
+        """
+        return [n.repr_image_name() for n in self._cartas_[:num]]
