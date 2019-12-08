@@ -340,12 +340,14 @@ class Baraja():
     def __init__(self):
         self._cartas_ = [(nmro,palo) for nmro in range(1,14) for palo in range(4)]
         self._cnt_ = 0
-        
+        # Create a random certificate for each baraja for debugging purposes
+        self.certificate = "B{:03d}".format(r.randint(0,999))
+
     def __str__(self):
         return ','.join([Naipe(naipe).__str__()\
                 for naipe in self._cartas_])
 
-        
+
     def revolver(self):
         '''
         Revuelve la baraja completa y vuelve a cero el contador
@@ -353,9 +355,9 @@ class Baraja():
         r.shuffle(self._cartas_)
         self._cnt_ = 0
         return self
-    
+
     def chequear_3_iguales(self, n=5):
-        '''Chequea si hay tres cartas de una misma numero en 
+        '''Chequea si hay tres cartas de una misma numero en
         una mano de n (5 es default) naipes'''
         mano = self._cartas_[0:n]
         for i in range(1,14):
@@ -366,7 +368,7 @@ class Baraja():
             return False
 
     def sacar_mano(self,n):
-        '''Retorna una mano (tuple) de tamano n del 
+        '''Retorna una mano (tuple) de tamano n del
         principio de la baraja'''
         N = self._cnt_
         self._cnt_ += n

@@ -176,6 +176,13 @@ class BasicResults(ut.TestCase):
         B.preview()
         self.assertEqual(len(B.preview()), 10)
 
+    def test_certificate_stays_the_same(self):
+        B = Baraja()
+        certif1 = B.certificate
+        B.revolver
+        certif2 = B.certificate
+        self.assertEqual(certif1, certif2)
+
 
 
 
