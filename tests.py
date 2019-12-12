@@ -73,11 +73,26 @@ class BasicResults(ut.TestCase):
 
     def test_premios3(self):
         '''Revisa si la fucion hay_premio asigna los premios correctamente'''
+        man = Mano(['KC', 'AC', 'QS', '3C', '6C'])
+        self.assertEqual(None, man.hay_premio())
+
+        man = Mano(['AC', 'AS', 'QC', '3C', '3H'])
+        self.assertEqual('two pair', man.hay_premio().lower())
+
         man = Mano(['2S', '2D', '2H', '2C', '3D'])
         self.assertEqual('poker', man.hay_premio().lower())
 
         man = Mano(['2S', '3S', '4S', '5C', '6D'])
         self.assertEqual('straight', man.hay_premio().lower())
+
+        man = Mano(['2C', '3C', '4C', '5C', '6C'])
+        self.assertEqual('straight flush', man.hay_premio().lower())
+
+        man = Mano(['KC', 'AC', 'QC', '3C', '6C'])
+        self.assertEqual('flush', man.hay_premio().lower())
+
+        man = Mano(['KC', 'AC', 'QC', 'JC', '10C'])
+        self.assertEqual('royal flush', man.hay_premio().lower())
 
     def test_int_naipe_conversion(self):
         n = Naipe((2,2))
