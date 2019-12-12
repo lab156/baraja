@@ -2,3 +2,4 @@
 *~
 #python stuff
 __pycache__
+.ipynb_checkpoints/
