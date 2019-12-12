@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.4'
-#       jupytext_version: 1.2.4
+#       jupytext_version: 1.1.1
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -17,6 +17,8 @@ import random as r
 import itertools as itt
 import sys
 from scipy.stats import chi2
+# %load_ext autoreload
+# %autoreload 2
 from baraja import Naipe, Mano, Baraja
 # #%run ~/code/EfedEquis/Efedequis/poquer/baraja/baraja
 
@@ -139,7 +141,7 @@ print(Mano(i))
 int(10e5)
 
 Naipe((1,0)) == Naipe((1,0))
-    
+
 
 b.sacar_mano(5) == b.sacar_mano(5)
 
@@ -161,5 +163,41 @@ b.sacar_lista_naipes(1)[0]
 82.9e-9*10e5
 
 # %timeit Naipe((1,0))
+
+import re
+r = re.match('^([2-9]|10|[AJQK])([SDCH])$', '10S')
+r.group(1),r.group(2)
+
+isinstance('A', int)
+
+
+# +
+class OO(frozenset):
+    
+
+OO({1,2,3})
+
+
+# -
+
+class Mano(frozenset):
+    def __new__(cls,X):
+        return frozenset.__new__(cls,X)
+    
+    def culi(self):
+        print('culi es culito')
+
+
+
+M = Mano([1,2,3])
+
+M.culi()
+
+man = Mano(['AS', '3S', '4S', '5C', '6D'])
+print(man)
+
+man.hay_premio()
+
+Naipe('10S')
 
 

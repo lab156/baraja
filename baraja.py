@@ -1,10 +1,31 @@
 import random as r
+import re
 
 class Naipe():
     def __init__(self, naipe):
         if isinstance(naipe,Naipe):
             self.numero = naipe.numero
             self.palo = naipe.palo
+        elif isinstance(naipe, str):
+            # strings of length 2 ex. "AC" , '10S'
+            num_dict = { 'A': 1,
+                    'J': 11,
+                    'Q': 12,
+                    'K': 13, }
+            palo_dict = { 'S': 0, 
+                    'H': 1,
+                    'C': 2,
+                    'D': 3, }
+            r = re.match('^([2-9]|10|[AJQK])([SDCH])$', naipe)
+            try:
+                num, palo = r.group(1),r.group(2)
+            except AttributeError:
+                raise ValueError("The string %s has incorrect format"%naipe)
+            if num in num_dict.keys():
+                self.numero = num_dict[num]
+            else:
+                self.numero = int(num)
+            self.palo = palo_dict[palo]
         else:
             try:
                 self.numero = naipe[0]
@@ -162,11 +183,16 @@ class Mano(frozenset):
     * No importa el orden en que estan las cartas.
     * Tiene rutina eficiente para revisar cosas como si hay tres iguales, si es un flush o un royal flush.
     '''
-#    def __new__(self, mano):
-#        if hasattr(mano, '__iter__'):
-#            return frozenset.__new__(self, [Naipe(naipe) for naipe in mano])
-#        else:
-#            raise ValueError('Mano was fed a non iterable object: %s'%mano)
+    def __new__(cls, lst):
+        if all(isinstance(n, tuple) for n in lst):
+            mano = lst
+        elif all(isinstance(n, Naipe) for n in lst):
+            mano = [p.get_as_tuple() for p in lst]
+        elif all(isinstance(n, str) for n in lst):
+            mano = [Naipe(p).get_as_tuple() for p in lst]
+        else:
+            raise(ValueError('Los valores de la lista estan mal'))
+        return frozenset.__new__(cls, mano)
 
     def __str__(self):
         return ','.join([Naipe(naipe).__str__() for naipe in self])
@@ -186,6 +212,8 @@ class Mano(frozenset):
             mano = Mano(lst)
         elif all(isinstance(n, Naipe) for n in lst):
             mano = Mano([p.get_as_tuple() for p in lst])
+        elif all(isinstance(n, str) for n in lst):
+            mano = Mano([Naipe(p).get_as_tuple() for p in lst])
         else:
             raise(ValueError('Los valores de la lista estan mal'))
         return mano
@@ -273,7 +301,7 @@ class Mano(frozenset):
         elif isinstance(item,int):
             return ((item,0) in self or (item,1) in self or (item,2) in self or (item,3) in self)
         else:
-            raise TypeError('Dentro fue llamado  con un argumento que no entiendo')
+            raise TypeError('Dentro fue llamado  con: %s, %s un argumento que no entiendo'%(item, type(item)))
 
 #    def _sort(self):
 #        lst = sorted(list(self), key = lambda x: x[0])
@@ -391,3 +419,35 @@ class Baraja():
         For debugging purposes: returns a console friendly list of the firs num naipes in the baraja without updating _cnt_
         """
         return [Naipe(n).repr_image_name() for n in self._cartas_[:num]]
+
+    def index(self, carta):
+        """
+        Returns the index of a certain card
+        """
+        if isinstance(carta, tuple):
+            c = carta
+        elif isinstance(carta, Naipe):
+            c = carta.get_as_tuple()
+        else:
+            raise ValueError("I can't make %s into a naipe"%carta)
+        return self._cartas_.index(c)
+
+    def swap_2_cards(self, c1, c2):
+        """
+        finds and swaps the Naipes c1 and c2
+        """
+        i1 = self.index(c1)
+        i2 = self.index(c2)
+        self._cartas_[i1], self._cartas_[i2] = self._cartas_[i2], self._cartas_[i1] 
+        return self
+
+    def start_with(self, naipe_list):
+        '''
+        given the list of naipes naipe_list
+        swap so that they start with it
+        '''
+        for i,c in enumerate(naipe_list):
+            naipe1 = self._cartas_[i]
+            self.swap_2_cards(c, Naipe(naipe1).get_as_tuple())
+        return self
+

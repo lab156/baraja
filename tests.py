@@ -48,10 +48,10 @@ class BasicResults(ut.TestCase):
 
         man = Mano([(1,3),(3,3),(2,3),(12,3),(5,3)])
         self.assertEqual('flush', man.hay_premio().lower())
-        
+
         man = Mano([(1,3),(13,1),(11,2),(12,3),(2,3)])
         self.assertEqual(None, man.hay_premio())
-        
+
         man = Mano([(13,3),(13,1),(13,2),(9,3),(9,2)])
         self.assertIn('full house', man.hay_premio().lower())
 
@@ -62,7 +62,7 @@ class BasicResults(ut.TestCase):
         self.assertIn('straight', man.hay_premio().lower())
         self.assertIn('flush', man.hay_premio().lower())
 
-        
+
     def test_premios2(self):
         with self.assertRaises(AssertionError):
             man = Mano([(12,3),])
@@ -70,6 +70,14 @@ class BasicResults(ut.TestCase):
 
             man = Mano([(1,1),(6,3),(8,3),(7,3),(5,3),(4,3)])
             man.is_poker()
+
+    def test_premios3(self):
+        '''Revisa si la fucion hay_premio asigna los premios correctamente'''
+        man = Mano(['2S', '2D', '2H', '2C', '3D'])
+        self.assertEqual('poker', man.hay_premio().lower())
+
+        man = Mano(['2S', '3S', '4S', '5C', '6D'])
+        self.assertEqual('straight', man.hay_premio().lower())
 
     def test_int_naipe_conversion(self):
         n = Naipe((2,2))
@@ -87,8 +95,23 @@ class BasicResults(ut.TestCase):
             Naipe((2,-1))
         with self.assertRaises(AssertionError):
             Naipe((2,4))
-            
 
+    def test_naipe_init_str(self):
+        with self.assertRaisesRegex(ValueError, "The string \w has incorrect format"):
+            Naipe('A')
+            Naipe('ACC')
+            Naipe('AAC')
+            Naipe('AZ')
+            Naipe('ACC')
+            Naipe('11C')
+            Naipe('99C')
+            Naipe('0C')
+            Naipe('1C')
+
+    def test_naipe_init_str2(self):
+        str_lst = ['10C', '7D', 'AH', 'KH', '2H']
+        for s in str_lst:
+            self.assertEqual(s, Naipe(s).repr_image_name())
 
     def test_repr_naipes(self):
         #Revisa si la representasion esta funcionando para la guaya
@@ -145,7 +168,7 @@ class BasicResults(ut.TestCase):
         lim_sup = 0.5*xi2(1 - alfa/2, 2*K + 2)
         print("Probando a ver si: %s < %s < %s"%(lim_inf,lam,lim_sup))
         self.assertTrue(lim_inf < lam < lim_sup)
-    
+
     def test_Mano_new(self):
         m1 = Mano.new([0,1,2,3])
         m2 = Mano.new([(1,0),(2,0),(3,0),(4,0)])
@@ -183,6 +206,28 @@ class BasicResults(ut.TestCase):
         certif2 = B.certificate
         self.assertEqual(certif1, certif2)
 
+    def test_baraja_index1(self):
+        B = Baraja()
+        ind = B.index((2,0))
+        self.assertEqual(ind, 4)
 
+    def test_baraja_index2(self):
+        B = Baraja()
+        carta = Naipe((2,0))
+        ind = B.index(carta)
+        self.assertEqual(ind, 4)
+
+    def test_swap_2_cards(self):
+        B = Baraja()
+        B.swap_2_cards((1,0), Naipe((13,3)))
+        self.assertEqual(B.index((13,3)), 0)
+        self.assertEqual(B.index((1,0)), 51)
+
+    def test_start_with(self):
+        B = Baraja()
+        B.revolver()
+        start_lst = [Naipe((1,2)), Naipe((3,0)), Naipe((6,1))]
+        B.start_with(start_lst)
+        self.assertEqual(B.sacar_lista_naipes(3), start_lst)
 
 
