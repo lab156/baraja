@@ -1,4 +1,4 @@
-from baraja import Naipe, Baraja, Mano
+from baraja import Naipe, Baraja, Mano, Prize
 import unittest as ut
 from math import sqrt
 from scipy.stats import chi2
@@ -42,25 +42,32 @@ class BasicResults(ut.TestCase):
         '''Revisa si la fucion hay_premio asigna los premios correctamente'''
         man = Mano([(12,3),(3,1),(2,1),(12,1),(5,1)])
         self.assertIn('jacks', man.hay_premio().lower())
+        self.assertEqual(Prize.JacksOrBetter, man.prize())
 
         man = Mano([(12,3),(3,1),(2,1),(12,1),(2,3)])
         self.assertIn('two pair', man.hay_premio().lower())
+        self.assertEqual(Prize.TwoPair, man.prize())
 
         man = Mano([(1,3),(3,3),(2,3),(12,3),(5,3)])
         self.assertEqual('flush', man.hay_premio().lower())
+        self.assertEqual(Prize.Flush, man.prize())
 
         man = Mano([(1,3),(13,1),(11,2),(12,3),(2,3)])
         self.assertEqual(None, man.hay_premio())
+        self.assertEqual(Prize.Loss, man.prize())
 
         man = Mano([(13,3),(13,1),(13,2),(9,3),(9,2)])
         self.assertIn('full house', man.hay_premio().lower())
+        self.assertEqual(Prize.FullHouse, man.prize())
 
         man = Mano([(1,3),(13,3),(11,3),(12,3),(10,3)])
         self.assertIn('royal', man.hay_premio().lower())
+        self.assertEqual(Prize.RoyalFlush, man.prize())
 
         man = Mano([(6,3),(8,3),(7,3),(5,3),(4,3)])
         self.assertIn('straight', man.hay_premio().lower())
         self.assertIn('flush', man.hay_premio().lower())
+        self.assertEqual(Prize.StraightFlush, man.prize())
 
 
     def test_premios2(self):
@@ -75,24 +82,31 @@ class BasicResults(ut.TestCase):
         '''Revisa si la fucion hay_premio asigna los premios correctamente'''
         man = Mano(['KC', 'AC', 'QS', '3C', '6C'])
         self.assertEqual(None, man.hay_premio())
+        self.assertEqual(Prize.Loss, man.prize())
 
         man = Mano(['AC', 'AS', 'QC', '3C', '3H'])
         self.assertEqual('two pair', man.hay_premio().lower())
+        self.assertEqual(Prize.TwoPair, man.prize())
 
         man = Mano(['2S', '2D', '2H', '2C', '3D'])
         self.assertEqual('poker', man.hay_premio().lower())
+        self.assertEqual(Prize.Poker, man.prize())
 
         man = Mano(['2S', '3S', '4S', '5C', '6D'])
         self.assertEqual('straight', man.hay_premio().lower())
+        self.assertEqual(Prize.Straight, man.prize())
 
         man = Mano(['2C', '3C', '4C', '5C', '6C'])
         self.assertEqual('straight flush', man.hay_premio().lower())
+        self.assertEqual(Prize.StraightFlush, man.prize())
 
         man = Mano(['KC', 'AC', 'QC', '3C', '6C'])
         self.assertEqual('flush', man.hay_premio().lower())
+        self.assertEqual(Prize.Flush, man.prize())
 
         man = Mano(['KC', 'AC', 'QC', 'JC', '10C'])
         self.assertEqual('royal flush', man.hay_premio().lower())
+        self.assertEqual(Prize.RoyalFlush, man.prize())
 
     def test_int_naipe_conversion(self):
         n = Naipe((2,2))
@@ -237,6 +251,10 @@ class BasicResults(ut.TestCase):
         B.swap_2_cards((1,0), Naipe((13,3)))
         self.assertEqual(B.index((13,3)), 0)
         self.assertEqual(B.index((1,0)), 51)
+        # Swap same card
+        B.swap_2_cards((1,0), Naipe((1,0)))
+        self.assertEqual(B.index((1,0)), 51)
+
 
     def test_start_with(self):
         B = Baraja()
@@ -245,4 +263,36 @@ class BasicResults(ut.TestCase):
         B.start_with(start_lst)
         self.assertEqual(B.sacar_lista_naipes(3), start_lst)
 
+        start_lst = [Naipe((1,2)),]
+        B.start_with(start_lst)
+        self.assertEqual(B.sacar_lista_naipes(1, start_at_0=True), start_lst)
 
+    def test_premios4(self):
+        B = Baraja()
+        B.revolver()
+        start_lst = [Naipe('AH'), Naipe('QH'), Naipe('JH'), Naipe('10H'), Naipe('KH')]
+        B.start_with(start_lst)
+        man = B.sacar_mano(5)
+        self.assertEqual('royal flush', man.hay_premio().lower())
+        self.assertEqual('royal flush', man.hay_premio().lower())
+
+    def test_randNaipe_alot(self):
+        B = Baraja()
+        for _ in range(1000):
+            B.randNaipe(15)
+
+    def test_randSample(self):
+        B = Baraja()
+        s = B.randSample(1,after=51)[0]
+        self.assertEqual(Naipe('KD'), Naipe(s))
+
+    def test_play(self):
+        B = Baraja()
+        B.start_with(list(map(Naipe, ['2S','2D','3S','2H','2C'])))
+        self.assertEqual(Prize.Poker, B.play(28))
+        B.start_with(list(map(Naipe, ['2S','2D','3S','3H','2C'])))
+        self.assertEqual(Prize.FullHouse, B.play(31))
+
+    def test_naipe_is_idempotent(self):
+        self.assertIsInstance(Naipe('KD'), Naipe)
+        self.assertIsInstance(Naipe(Naipe('KD')), Naipe)

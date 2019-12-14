@@ -1,9 +1,11 @@
 import random as r
 import re
+import actions
+from enum import Enum
 
 class Naipe():
     def __init__(self, naipe):
-        if isinstance(naipe,Naipe):
+        if isinstance(naipe, Naipe):
             self.numero = naipe.numero
             self.palo = naipe.palo
         elif isinstance(naipe, str):
@@ -31,7 +33,7 @@ class Naipe():
                 self.numero = naipe[0]
                 self.palo = naipe[1]
             except:
-                raise ValueError('Naipe recibio una cosa rara')
+                raise ValueError('Naipe recibio una cosa rara %s has type %s'%(naipe, type(naipe)))
             assert(self.numero <= 13 and self.numero >= 1 and \
                         self.palo <= 3 and self.palo >= 0), "Values out of valid ranges for Naipe"
         
@@ -354,7 +356,53 @@ class Mano(frozenset):
             premio = 'Flush'
 
         return premio
+
+    @check_has_5_cards
+    def prize(self):
+        'Guaranteed to return a prize or loss'
+        if self.is_jacks_or_better():
+            premio = Prize.JacksOrBetter
+        elif self.is_full_house():
+            #FULL HOUSE TIENE QUE IR ANTES DE 3 of a kind
+            #PORQUE LOS DOS SE DISPARAN AL MISMO TIEMPO.
+            premio = Prize.FullHouse
+        elif self.is_three_of_a_kind():
+            #DEBERIA DE DECIR DE QUE ES EL PAR
+            premio = Prize.ThreeOfAKind
+        elif self.is_poker():
+            #DEBERIA DE DECIR DE QUE ES EL POQUER
+            premio = Prize.Poker
+        elif self.is_two_pair():
+            premio = Prize.TwoPair
+        elif self.is_royal_flush():
+            premio = Prize.RoyalFlush
+        elif self.is_straight_flush():
+            premio = Prize.StraightFlush
+        elif self.is_straight():
+            premio = Prize.Straight
+        elif self.is_flush():
+            premio = Prize.Flush
+        else:
+            premio = Prize.Loss
+
+        return premio
         
+class Prize(Enum):
+    Loss = 0
+    JacksOrBetter = 1
+    TwoPair = 2
+    ThreeOfAKind = 3
+    Straight = 4
+    Flush = 6
+    FullHouse = 9
+    Poker = 25
+    StraightFlush = 50
+    RoyalFlush = 250
+
+    def __lt__(self, other):
+        return self.value < other.value
+    def __le__(self, other):
+        return self.value <= other.value
 
 
 class Baraja():
@@ -424,11 +472,9 @@ class Baraja():
         """
         Returns the index of a certain card
         """
-        if isinstance(carta, tuple):
-            c = carta
-        elif isinstance(carta, Naipe):
-            c = carta.get_as_tuple()
-        else:
+        try:
+            c = Naipe(carta).get_as_tuple()
+        except:
             raise ValueError("I can't make %s into a naipe"%carta)
         return self._cartas_.index(c)
 
@@ -441,6 +487,24 @@ class Baraja():
         self._cartas_[i1], self._cartas_[i2] = self._cartas_[i2], self._cartas_[i1] 
         return self
 
+    def randNaipe(self, after=0):
+        '''
+        Get a random Naipe after this value
+        Just a little better that randint(_, 51)
+        This function includes the value after
+        '''
+        random_int = r.randint(after, 51)
+        return self._cartas_[random_int]
+
+    def randSample(self, size, after=0):
+        '''
+        Get a random Naipe after this value
+        Just a little better that randint(_, 51)
+        This function includes the value after
+        '''
+        random_lst = r.sample(range(after,52),size)
+        return [self._cartas_[p] for p in random_lst]
+
     def start_with(self, naipe_list):
         '''
         given the list of naipes naipe_list
@@ -450,4 +514,27 @@ class Baraja():
             naipe1 = self._cartas_[i]
             self.swap_2_cards(c, Naipe(naipe1).get_as_tuple())
         return self
+
+    def play(self, action):
+        mano_size = 5 # sample after this value 
+        act = actions.actions[action]
+        #convert to one hot (2, 4) -> [False, False, True, False, True]
+        replacement_cards = self.randSample(mano_size - len(act), after=(mano_size))
+        man = Mano([self._cartas_[i] if (i in act) else replacement_cards.pop() for i in range(mano_size) ])
+        return man.prize()
+
+    def evaluate(self, action, sample_size=1):
+        '''
+        for a action see actions.py file sample randomly 
+        sample_size: returns an estimate of the expected prize of a certain action 
+        '''
+        prize_sum = 0
+        for k in range(sample_size):
+            prize_sum += self.play(action).value
+
+        return prize_sum/float(sample_size)
+
+
+            
+
 

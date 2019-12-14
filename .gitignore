@@ -3,3 +3,6 @@
 #python stuff
 __pycache__
 .ipynb_checkpoints/
+
+#notebooks are ignored
+*.ipynb

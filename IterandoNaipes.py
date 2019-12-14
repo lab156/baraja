@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.4'
-#       jupytext_version: 1.1.1
+#       jupytext_version: 1.2.4
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -19,8 +19,20 @@ import sys
 from scipy.stats import chi2
 # %load_ext autoreload
 # %autoreload 2
-from baraja import Naipe, Mano, Baraja
+import actions as act
+from baraja import Naipe, Mano, Baraja, Prize
 # #%run ~/code/EfedEquis/Efedequis/poquer/baraja/baraja
+
+Prize.JacksOrBetter == Prize.Flush
+
+r.randint(4,5)
+
+b = Baraja()
+b.start_with(map(Naipe,['AS', 'QS', 'QD', 'JS', '10S']))
+res = []
+for i in range(32):
+    res.append((act.actions[i], b.evaluate(i, 50)))
+{k: v for k, v in sorted(res, key=lambda item: -item[1])}
 
 n = Naipe((1,0))
 
@@ -118,8 +130,6 @@ while t<400:
 lis = [1,3]
 lis.
 
-b = Baraja()
-
 suma = 0
 for i in itt.combinations(b._cartas_,5):
     if Mano(i).is_poker():
@@ -198,6 +208,12 @@ print(man)
 
 man.hay_premio()
 
-Naipe('10S')
 
 
+6/4
+
+list(map(Naipe,['KS']))[0]
+
+a = act.actions[28]
+print(a)
+[(b in a) for b in range(5)]
