@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.4'
-#       jupytext_version: 1.2.4
+#       jupytext_version: 1.1.1
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -23,23 +23,12 @@ import actions as act
 from baraja import Naipe, Mano, Baraja, Prize
 # #%run ~/code/EfedEquis/Efedequis/poquer/baraja/baraja
 
-Prize.JacksOrBetter == Prize.Flush
-
-r.randint(4,5)
-
 b = Baraja()
 b.start_with(map(Naipe,['AS', 'QS', 'QD', 'JS', '10S']))
 res = []
 for i in range(32):
-    res.append((act.actions[i], b.evaluate(i, 50)))
+    res.append((act.actions[i], b.evaluate(i, 100)))
 {k: v for k, v in sorted(res, key=lambda item: -item[1])}
-
-n = Naipe((1,0))
-
-n.get_as_tuple()
-
-b = Baraja()
-print(b)
 
 m = Mano([(1,0),(1,2),(1,3),(10,2),(4,3)])
 

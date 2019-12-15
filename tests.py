@@ -1,3 +1,4 @@
+# To run all the tests: python -m unittest tests.py
 from baraja import Naipe, Baraja, Mano, Prize
 import unittest as ut
 from math import sqrt
@@ -9,7 +10,7 @@ class BasicResults(ut.TestCase):
 
     def test_manos_in_sets(self):
         '''Revisa si puedo meter Manos en sets...
-        Algo con lo que pase bastante apuro fue 
+        Algo con lo que pase bastante apuro fue
         haciendo que se pudiera hacer conjuntos con
         elementos de la clase Mano'''
         conjunto = set()
@@ -117,7 +118,7 @@ class BasicResults(ut.TestCase):
         n = Naipe((1,2))
         self.assertTrue(n.get_as_tuple() == (1,2))
         with self.assertRaises(AssertionError):
-            n = Naipe((0,2))
+            n = Naipe((0,2)) # numero comienza de 1 no de cero
         with self.assertRaises(AssertionError):
             Naipe((14,1))
         with self.assertRaises(AssertionError):
@@ -172,7 +173,7 @@ class BasicResults(ut.TestCase):
             B.revolver()
             if Naipe((1,0)) == B.sacar_lista_naipes(1)[0]:
                 X += 1.0
-        print('lo que se esta probando %s < %s < %s'%(p - z*stdev, X/n, p + z*stdev))
+        #print('lo que se esta probando %s < %s < %s'%(p - z*stdev, X/n, p + z*stdev))
         self.assertTrue(p - z*stdev < X/n < p + z*stdev)
 
     def test_randomness_2(self):
@@ -195,7 +196,7 @@ class BasicResults(ut.TestCase):
                 K += 1
         lim_inf = 0.5*xi2(alfa/2, 2*K)
         lim_sup = 0.5*xi2(1 - alfa/2, 2*K + 2)
-        print("Probando a ver si: %s < %s < %s"%(lim_inf,lam,lim_sup))
+        #print("Probando a ver si: %s < %s < %s"%(lim_inf,lam,lim_sup))
         self.assertTrue(lim_inf < lam < lim_sup)
 
     def test_Mano_new(self):
@@ -296,3 +297,17 @@ class BasicResults(ut.TestCase):
     def test_naipe_is_idempotent(self):
         self.assertIsInstance(Naipe('KD'), Naipe)
         self.assertIsInstance(Naipe(Naipe('KD')), Naipe)
+
+    def test_one_hot(self):
+        B = Baraja()
+        bin_lst = B.one_hot()
+        self.assertTrue(all(bin_lst[:5]))
+        self.assertTrue(not any(bin_lst[5:]))
+
+    def test_approx_best_move(self):
+        b = Baraja()
+        b.start_with(map(Naipe,['AS', 'QS', 'JS', 'KH', '10S']))
+        self.assertEqual(b.approx_best_move()[0], 31)
+
+if __name__ == '__main__':
+    unittest.main()

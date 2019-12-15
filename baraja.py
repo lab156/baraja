@@ -1,13 +1,16 @@
 import random as r
 import re
-import actions
+try:
+    from . import actions
+except ImportError:
+    import actions
 from enum import Enum
 
 class Naipe():
     def __init__(self, naipe):
-        if isinstance(naipe, Naipe):
-            self.numero = naipe.numero
-            self.palo = naipe.palo
+        if isinstance(naipe, tuple):
+            self.numero = naipe[0]
+            self.palo = naipe[1]
         elif isinstance(naipe, str):
             # strings of length 2 ex. "AC" , '10S'
             num_dict = { 'A': 1,
@@ -30,29 +33,28 @@ class Naipe():
             self.palo = palo_dict[palo]
         else:
             try:
-                self.numero = naipe[0]
-                self.palo = naipe[1]
+                self.numero = naipe.numero
+                self.palo = naipe.palo
             except:
                 raise ValueError('Naipe recibio una cosa rara %s has type %s'%(naipe, type(naipe)))
-            assert(self.numero <= 13 and self.numero >= 1 and \
-                        self.palo <= 3 and self.palo >= 0), "Values out of valid ranges for Naipe"
-        
+        assert(self.numero <= 13 and self.numero >= 1 and \
+                    self.palo <= 3 and self.palo >= 0), "Values out of valid ranges for Naipe"
     def __str__(self):
-        '''Prints the representation of the card 
+        '''Prints the representation of the card
         taken from http://en.wikipedia.org/wiki/Playing_cards_in_Unicode
         '''
         return '(%s,%s)'%(self.repr_numero(), self.repr_palo_unicode())
-    
+ 
     def __repr__(self):
         return self.repr_naipe()
 
     def __eq__(self,other):
-        return (self.numero == other.numero) and (self.palo == other.palo) 
+        return (self.numero == other.numero) and (self.palo == other.palo)
 
     @classmethod
     def from_int(cls, i):
         assert((i <= 51 and i >= 0)), "int = %s is not between 0 and 51"%i
-        return cls([i%13 + 1, int(i/13)])
+        return cls((i%13 + 1, int(i/13)))
 
     def get_as_int(self):
         '''
@@ -515,26 +517,44 @@ class Baraja():
             self.swap_2_cards(c, Naipe(naipe1).get_as_tuple())
         return self
 
-    def play(self, action):
-        mano_size = 5 # sample after this value 
+    def play(self, action, **kwargs):
+        '''
+        Takes the cards until the value given as mano_size and plays the action
+        and return the enum Prize (not a value)
+        '''
+        mano_size = kwargs.get('mano_size', 5)
         act = actions.actions[action]
         #convert to one hot (2, 4) -> [False, False, True, False, True]
         replacement_cards = self.randSample(mano_size - len(act), after=(mano_size))
         man = Mano([self._cartas_[i] if (i in act) else replacement_cards.pop() for i in range(mano_size) ])
         return man.prize()
 
-    def evaluate(self, action, sample_size=1):
+    def evaluate(self, action, **kwargs):
         '''
-        for a action see actions.py file sample randomly 
-        sample_size: returns an estimate of the expected prize of a certain action 
+        for a action see actions.py file sample randomly
+        sample_size: returns an estimate of the expected prize of a certain action (default is 1)
         '''
+        sample_size = kwargs.get('sample_size', 1)
         prize_sum = 0
         for k in range(sample_size):
-            prize_sum += self.play(action).value
+            prize_sum += self.play(action, **kwargs).value
 
         return prize_sum/float(sample_size)
 
+    def approx_best_move(self, action_lst='all',**kwargs):
+        sample_size = kwargs.get('sample_size', 10)
+        if action_lst == 'all':
+            res = []
+            for i in range(32):
+                res.append((i, self.evaluate(i, sample_size=sample_size)))
+        return max(res, key=lambda item: item[1])
 
-            
+    def one_hot(self, size=5):
+        '''
+        returns a list of binaries with True in the position of each of the first elements
+        and False elsewhere.
+        '''
+        mano_lst = self.sacar_lista_naipes(5, start_at_0=True)
+        return [Naipe((nmro,palo)) in mano_lst  for nmro in range(1,14) for palo in range(4)]
 
 

@@ -6,3 +6,6 @@ __pycache__
 
 #notebooks are ignored
 *.ipynb
+
+# I will be calling the session files .ses
+*.ses
