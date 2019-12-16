@@ -23,14 +23,17 @@ import actions as act
 from baraja import Naipe, Mano, Baraja, Prize
 # #%run ~/code/EfedEquis/Efedequis/poquer/baraja/baraja
 
+# %%time
 b = Baraja()
 b.start_with(map(Naipe,['AS', 'QS', 'QD', 'JS', '10S']))
 res = []
 for i in range(32):
-    res.append((act.actions[i], b.evaluate(i, 100)))
+    res.append((act.actions[i], b.evaluate(i, sample_size=1000)))
 {k: v for k, v in sorted(res, key=lambda item: -item[1])}
 
-m = Mano([(1,0),(1,2),(1,3),(10,2),(4,3)])
+len(act.actions[31])
+
+3.818/4
 
 for n in iter(m):
     print(Naipe(n).repr_naipe())

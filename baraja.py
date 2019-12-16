@@ -541,6 +541,24 @@ class Baraja():
 
         return prize_sum/float(sample_size)
 
+    def evaluate_eff(self, action, **kwargs):
+        '''
+        for a action see actions.py file sample randomly
+        sample_size: returns an estimate of the expected prize of a certain action (default is 1)
+        '''
+        sample_size = kwargs.get('sample_size', 1)
+        prize_sum = 0
+        if len(actions.actions[action]) == 5:
+            # If holding all cards, don't need to sample 
+            prize_sum += self.play(action, **kwargs).value
+            eval_num = 1.
+        else:
+            for k in range(sample_size):
+                prize_sum += self.play(action, **kwargs).value
+            eval_num = float(sample_size)
+
+        return prize_sum/eval_num
+
     def approx_best_move(self, action_lst='all',**kwargs):
         sample_size = kwargs.get('sample_size', 10)
         if action_lst == 'all':
