@@ -502,7 +502,7 @@ class Baraja():
         '''
         Get a random Naipe after this value
         Just a little better that randint(_, 51)
-        This function includes the value after
+        This function includes the value _after_
         '''
         random_lst = r.sample(range(after,52),size)
         return [self._cartas_[p] for p in random_lst]
@@ -547,11 +547,25 @@ class Baraja():
         sample_size: returns an estimate of the expected prize of a certain action (default is 1)
         '''
         sample_size = kwargs.get('sample_size', 1)
+        mano_size = kwargs.get('mano_size', 5)
         prize_sum = 0
         if len(actions.actions[action]) == 5:
             # If holding all cards, don't need to sample 
             prize_sum += self.play(action, **kwargs).value
             eval_num = 1.
+        elif len(actions.actions[action]) == 4 and sample_size > 47:
+            # there is at most 48 samples of one change
+            # find the value that is missing from the action.
+            repl_ind = [i for i in range(5) if i not in actions.actions[action]][0]
+            mano_lst = self._cartas_[:mano_size]
+            prize_sum = 0
+            for c in self._cartas_[mano_size:]:
+                mano_lst[repl_ind] = c
+                man = Mano(mano_lst)
+                prize_sum += man.prize().value
+                eval_num = 52 - mano_size
+        # There is a total of 1,176 sample choose(49,3) so it's probably not worth it to 
+        # do the sampling of the whole thing
         else:
             for k in range(sample_size):
                 prize_sum += self.play(action, **kwargs).value

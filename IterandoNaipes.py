@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.4'
-#       jupytext_version: 1.1.1
+#       jupytext_version: 1.2.4
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -28,21 +28,21 @@ b = Baraja()
 b.start_with(map(Naipe,['AS', 'QS', 'QD', 'JS', '10S']))
 res = []
 for i in range(32):
-    res.append((act.actions[i], b.evaluate(i, sample_size=1000)))
+    res.append((act.actions[i], b.evaluate_eff(i, sample_size=100)))
 {k: v for k, v in sorted(res, key=lambda item: -item[1])}
 
-len(act.actions[31])
+# %%time
+b = Baraja()
+b.start_with(map(Naipe,['AS', 'QS', 'QD', 'JS', '10S']))
+res = []
+for i in range(32):
+    res.append((act.actions[i], b.evaluate(i, sample_size=100)))
+{k: v for k, v in sorted(res, key=lambda item: -item[1])}
 
-3.818/4
+[i for i in range(5) if i not in act.actions[29] ], act.actions[29] 
 
 for n in iter(m):
     print(Naipe(n).repr_naipe())
-
-m
-
-45%13
-
-int(45/13)
 
 b.revolver()
 mac = b.sacar_lista_naipes(5)
@@ -190,7 +190,6 @@ class Mano(frozenset):
         print('culi es culito')
 
 
-
 M = Mano([1,2,3])
 
 M.culi()
@@ -199,10 +198,6 @@ man = Mano(['AS', '3S', '4S', '5C', '6D'])
 print(man)
 
 man.hay_premio()
-
-
-
-6/4
 
 list(map(Naipe,['KS']))[0]
 
