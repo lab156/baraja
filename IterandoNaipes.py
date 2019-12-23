@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.4'
-#       jupytext_version: 1.2.4
+#       jupytext_version: 1.1.1
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -25,7 +25,7 @@ from baraja import Naipe, Mano, Baraja, Prize
 
 # %%time
 b = Baraja()
-b.start_with(map(Naipe,['AS', 'QS', 'QD', 'JS', '10S']))
+b.start_with(map(Naipe,['3S', 'QS', 'QD', '7D', '6S']))
 res = []
 for i in range(32):
     res.append((act.actions[i], b.evaluate_eff(i, sample_size=100)))
@@ -44,9 +44,9 @@ for i in range(32):
 for n in iter(m):
     print(Naipe(n).repr_naipe())
 
-b.revolver()
-mac = b.sacar_lista_naipes(5)
-print(mac)
+print(b)
+print(b.revolver())
+
 
 m = b.revolver().sacar_mano(5)
 print(m)
