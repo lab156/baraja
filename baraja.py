@@ -574,10 +574,17 @@ class Baraja():
         return prize_sum/eval_num
 
     def approx_best_move(self, action_lst='all',**kwargs):
+        '''
+        action_lst: actions to try in order to find the best
+        kwargs: same as for evaluate_eff
+        '''
         if action_lst == 'all':
             res = []
             for i in range(32):
                 res.append((i, self.evaluate_eff(i, **kwargs)))
+        else:
+            raise NotImplementedError()
+
         return max(res, key=lambda item: item[1])
 
     def one_hot(self, size=5):

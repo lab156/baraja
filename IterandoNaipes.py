@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.4'
-#       jupytext_version: 1.1.1
+#       jupytext_version: 1.2.4
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -25,11 +25,13 @@ from baraja import Naipe, Mano, Baraja, Prize
 
 # %%time
 b = Baraja()
-b.start_with(map(Naipe,['3S', 'QS', 'QD', '7D', '6S']))
+b.start_with(map(Naipe,['3S', 'QS', 'JD', '7S', '6S']))
 res = []
 for i in range(32):
-    res.append((act.actions[i], b.evaluate_eff(i, sample_size=100)))
+    res.append((act.actions[i], b.evaluate_eff(i, sample_size=10)))
 {k: v for k, v in sorted(res, key=lambda item: -item[1])}
+best = b.approx_best_move(sample_size=100)
+act.actions[best[0]],best[1]
 
 # %%time
 b = Baraja()
@@ -43,10 +45,6 @@ for i in range(32):
 
 for n in iter(m):
     print(Naipe(n).repr_naipe())
-
-print(b)
-print(b.revolver())
-
 
 m = b.revolver().sacar_mano(5)
 print(m)
@@ -75,8 +73,6 @@ n = Naipe((3,2))
 for k in range(26):
     print(n)
     n = n.get_successor()
-
-
 
 isinstance(Naipe((1,0)),Naipe)
 
@@ -128,17 +124,7 @@ for i in itt.combinations(b._cartas_,5):
         suma += 1
 print(suma)
 
-13*12*36*44/2
-
-13*6*12*4 
-
 print(Mano(i))
-
-2794946/157805000
-
-58656.0/2598960
-
-13*48
 
 int(10e5)
 
