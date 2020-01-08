@@ -521,11 +521,20 @@ class Baraja():
         '''
         Takes the cards until the value given as mano_size and plays the action
         and return the enum Prize (not a value)
+
+        options:
+          rand_sampling: default is true, avoid from randomly sampling the rest of the deck. Just get the next cards
         '''
         mano_size = kwargs.get('mano_size', 5)
+        rand_sampling = kwargs.get('rand_sampling', True)
         act = actions.actions[action]
         #convert to one hot (2, 4) -> [False, False, True, False, True]
-        replacement_cards = self.randSample(mano_size - len(act), after=(mano_size))
+        if rand_sampling:
+            replacement_cards = self.randSample(mano_size - len(act), after=(mano_size))
+        else:
+            replacement_cards = self._cartas_[mano_size:]
+            replacement_cards.reverse()
+
         man = Mano([self._cartas_[i] if (i in act) else replacement_cards.pop() for i in range(mano_size) ])
         return man.prize()
 

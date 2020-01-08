@@ -293,6 +293,9 @@ class BasicResults(ut.TestCase):
         self.assertEqual(Prize.Poker, B.play(28))
         B.start_with(list(map(Naipe, ['2S','2D','3S','3H','2C'])))
         self.assertEqual(Prize.FullHouse, B.play(31))
+        B = Baraja()
+        B.start_with(map(Naipe, ['4S', '2C', '8S', 'QC', '4D']))
+        self.assertEqual(Prize.TwoPair, B.play(18, rand_sampling=False))
 
     def test_naipe_is_idempotent(self):
         self.assertIsInstance(Naipe('KD'), Naipe)
@@ -306,8 +309,8 @@ class BasicResults(ut.TestCase):
 
     def test_approx_best_move(self):
         b = Baraja()
-        b.start_with(map(Naipe,['AS', 'QS', 'JS', 'KH', '10S']))
-        self.assertEqual(b.approx_best_move()[0], 31)
+        b.start_with(map(Naipe,['AS', 'QS', 'JS', 'KS', '10S']))
+        self.assertEqual(b.approx_best_move(sample_size=200)[0], 31)
 
 if __name__ == '__main__':
     unittest.main()

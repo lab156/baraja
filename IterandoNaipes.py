@@ -33,6 +33,29 @@ for i in range(32):
 best = b.approx_best_move(sample_size=100)
 act.actions[best[0]],best[1]
 
+
+# +
+#b = Baraja()
+#b.revolver()
+def strategy(bar, **kwargs):
+    return bar.approx_best_move(**kwargs)[0]
+
+def evaluate_strategy(s, b, **kwargs):
+    '''
+    kwargs goes directly to the strategy function
+    '''
+    best = s(b, **kwargs)
+    print(act.actions[best])
+    return b.play(best, rand_sampling=False).value
+print(b)
+evaluate_strategy(strategy, b, sample_size=1000)
+# -
+
+B = Baraja()
+B.start_with(map(Naipe, ['4S', '2C', '8S', 'QC', '4D']))
+print(B)
+B.play(18, rand_sampling=False)
+
 # %%time
 b = Baraja()
 b.start_with(map(Naipe,['AS', 'QS', 'QD', 'JS', '10S']))
