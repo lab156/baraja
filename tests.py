@@ -1,5 +1,5 @@
 # To run all the tests: python -m unittest tests.py
-from baraja import Naipe, Baraja, Mano, Prize
+from baraja import Naipe, Baraja, Mano, Prize, one_hot_inv
 import unittest as ut
 from math import sqrt
 from scipy.stats import chi2
@@ -304,8 +304,15 @@ class BasicResults(ut.TestCase):
     def test_one_hot(self):
         B = Baraja()
         bin_lst = B.one_hot()
-        self.assertTrue(all(bin_lst[:5]))
-        self.assertTrue(not any(bin_lst[5:]))
+        self.assertEqual(sum(bin_lst),5)
+
+    def test_one_hot_inv(self):
+        B = Baraja()
+        B.revolver()
+        bin_lst = B.one_hot()
+        self.assertEqual(B.sacar_mano(5), Mano(one_hot_inv(bin_lst)))
+        self.assertEqual(len(bin_lst), 52)
+
 
     def test_approx_best_move(self):
         b = Baraja()

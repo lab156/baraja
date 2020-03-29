@@ -175,6 +175,15 @@ def check_has_5_cards(f):
         return f(self)
     return wrapper
 
+def one_hot_inv(arr):
+    '''
+    given a list of the correct length (52)
+    returns a Mano object
+    '''
+    assert len(arr) == 52, 'Cagadal: iterable has length: %s'%len(arr)
+    return [Naipe.from_int(k).get_as_tuple() for k,c in enumerate(arr) if c]
+    
+
 class Mano(frozenset):
     '''Una mano de naipes, deberia de incluir las rutinas que tipicamente
     no involucran toda la baraja y en donde el orden no es muy importante.
@@ -602,6 +611,6 @@ class Baraja():
         and False elsewhere.
         '''
         mano_lst = self.sacar_lista_naipes(5, start_at_0=True)
-        return [Naipe((nmro,palo)) in mano_lst  for nmro in range(1,14) for palo in range(4)]
+        return [Naipe.from_int(k) in mano_lst  for k in range(52)]
 
 

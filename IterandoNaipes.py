@@ -5,8 +5,8 @@
 #     text_representation:
 #       extension: .py
 #       format_name: light
-#       format_version: '1.4'
-#       jupytext_version: 1.2.4
+#       format_version: '1.5'
+#       jupytext_version: 1.3.2
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -56,6 +56,7 @@ B.start_with(map(Naipe, ['4S', '2C', '8S', 'QC', '4D']))
 print(B)
 B.play(18, rand_sampling=False)
 
+# + jupyter={"outputs_hidden": true}
 # %%time
 b = Baraja()
 b.start_with(map(Naipe,['AS', 'QS', 'QD', 'JS', '10S']))
@@ -63,6 +64,7 @@ res = []
 for i in range(32):
     res.append((act.actions[i], b.evaluate(i, sample_size=100)))
 {k: v for k, v in sorted(res, key=lambda item: -item[1])}
+# -
 
 [i for i in range(5) if i not in act.actions[29] ], act.actions[29] 
 
