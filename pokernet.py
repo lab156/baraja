@@ -42,3 +42,18 @@ for _ in range(5):
     print('started batching')
     x_train, y_train = Batch(10)
     model.fit(x_train, y_train, epochs = 5)
+
+
+bar = Baraja()
+num_games = 10
+credit = 0
+for _ in range(num_games):
+    bar.revolver()
+    oh = np.array(bar.one_hot(), ndmin=2)
+    acc = np.argmax(model.call(oh))
+    #acc = random.randint(0,31)
+    credit += bar.play(acc).value
+print("The expected return is: ", credit/num_games - 1)
+model_filepath = 'poker.mdl'
+print('saving model at: ', model_filepath)
+model.save(model_filepath)
