@@ -5,6 +5,8 @@ from baraja import Naipe, Mano, Baraja, Prize, one_hot_inv
 import actions as act
 import matplotlib.pyplot as plt
 import random
+import multiprocessing as mp
+from functools import reduce
 
 # Tensorflow2 implementation
 action_num = 32 # The number of possible action the player can take
@@ -38,10 +40,11 @@ def batching(size):
         ybat.append(b.approx_best_move(sample_size=150)[0])
     return xbat, ybat
 
-pool = mp.Pool(processes=4)
 for _ in range(5):
     print('started batching ')
+    pool = mp.Pool(processes=4)
     ret = pool.map(batching, 4*[10])
+    pool.close()
     lx = reduce(lambda a,b: a+b, [r[0] for r in ret])
     ly = reduce(lambda a,b: a+b, [r[1] for r in ret])
     x_train = np.reshape(np.array(lx).astype(np.float32),[len(lx), 52]) 
