@@ -9,3 +9,6 @@ __pycache__
 
 # I will be calling the session files .ses
 *.ses
+
+# model files and directories
+*.mdl
