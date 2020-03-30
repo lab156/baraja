@@ -27,20 +27,25 @@ model.compile(optimizer='sgd',
              loss='sparse_categorical_crossentropy',
              metrics=['accuracy'])
 
-def Batch(size):
+def batching(size):
+    print('running batching')
     xbat = []
     ybat = []
     b = Baraja()
     for _ in range(size):
         b.revolver()
         xbat.append(b.one_hot())
-        #ybat.append(one_hot(b.approx_best_move(sample_size=100)[0]))
         ybat.append(b.approx_best_move(sample_size=150)[0])
-    return np.reshape(np.array(xbat).astype(np.float32),[size, 52]), np.reshape(np.array(ybat).astype(np.float32),[size,1])
+    return xbat, ybat
 
+pool = mp.Pool(processes=4)
 for _ in range(5):
-    print('started batching')
-    x_train, y_train = Batch(10)
+    print('started batching ')
+    ret = pool.map(batching, 4*[10])
+    lx = reduce(lambda a,b: a+b, [r[0] for r in ret])
+    ly = reduce(lambda a,b: a+b, [r[1] for r in ret])
+    x_train = np.reshape(np.array(lx).astype(np.float32),[len(lx), 52]) 
+    y_train = np.reshape(np.array(ly).astype(np.float32),[len(ly),1])
     model.fit(x_train, y_train, epochs = 5)
 
 
