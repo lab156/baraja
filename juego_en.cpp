@@ -5,7 +5,10 @@
 
 using namespace std;
 int main() {
-    Naipe nn(6);
-    cout<<"Hola, el naipe es: ("<<nn.numero()<<","<<nn.palo()<<")"<<endl;
+    for (int i =0; i<52; i++) {
+    Naipe nn(i);
+    cout<<"Hola, el naipe es: ("<<nn.numero()<<","<<nn.palo()<<")"<<" y numero es: "
+        <<nn.numero_char()<<nn.palo_char()<<nn.repr()<<endl;
+    }
 }
 
