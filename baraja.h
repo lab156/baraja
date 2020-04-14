@@ -1,8 +1,10 @@
 #include <string.h>
+#include <assert.h>
 // Equivalent of baraja.py implementation of classes Naipe, Baraja
 // shuffle algorithm: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
 // compiles with: g++ juego_en.cpp
 // checkout https://www.boost.org/doc/libs/1_72_0/libs/multi_index/example/rearrange.cpp
+// move to testing on googletest framework: https://github.com/google/googletest/blob/master/googletest/docs/primer.md
 
 
 const int DECK_SIZE = 52;
@@ -12,9 +14,9 @@ class Naipe {
 // Internally implemented as just an int value 
 // 0 <= naipe <= 51 
 // 0 = AS, 13 = AH, 26 = AC, 39 = AD, 51 = KD 
-        int naipe;
+        unsigned short naipe;
     public:
-        Naipe(int N) { naipe = N; }; //TODO add an assert 0<=N<=51
+        Naipe(int N) { assert(N < DECK_SIZE); naipe = N; }; 
         int numero() { return (naipe)%13 + 1; };
         int palo() { return naipe/13; };
 
