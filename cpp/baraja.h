@@ -4,7 +4,6 @@
 // shuffle algorithm: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
 // compiles with: g++ juego_en.cpp
 // checkout https://www.boost.org/doc/libs/1_72_0/libs/multi_index/example/rearrange.cpp
-// move to testing on googletest framework: https://github.com/google/googletest/blob/master/googletest/docs/primer.md
 
 
 const int DECK_SIZE = 52;

@@ -12,3 +12,6 @@ __pycache__
 
 # model files and directories
 *.mdl
+
+# .o g++ output files
+*.o
