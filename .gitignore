@@ -13,5 +13,7 @@ __pycache__
 # model files and directories
 *.mdl
 
-# .o g++ output files
+# .o g++ output files. Calling executable .exe
 *.o
+*.exe
+

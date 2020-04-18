@@ -1,5 +1,6 @@
 #include <string.h>
 #include <assert.h>
+#include <ctype.h>
 // Equivalent of baraja.py implementation of classes Naipe, Baraja
 // shuffle algorithm: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
 // compiles with: g++ juego_en.cpp
@@ -16,6 +17,11 @@ class Naipe {
         unsigned short naipe;
     public:
         Naipe(int N) { assert(N < DECK_SIZE); naipe = N; }; 
+        Naipe(int numero, int palo) : Naipe( numero - 1 + palo*13 ) {};
+
+        friend bool operator == (const Naipe &lhs, const Naipe &rhs) { return lhs.naipe == rhs.naipe; };
+        friend bool operator != (const Naipe &lhs, const Naipe &rhs) { return !(lhs == rhs); };
+
         int numero() { return (naipe)%13 + 1; };
         int palo() { return naipe/13; };
 

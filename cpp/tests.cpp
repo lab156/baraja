@@ -4,7 +4,7 @@
 
 using namespace std;
 
-TEST(NaipeTest, TestRepr) {
+TEST(TestRepr, NaipeTest) {
     Naipe nn(1);
     EXPECT_EQ(nn.palo(), 0);
     EXPECT_EQ(nn.numero(), 2);
@@ -16,7 +16,26 @@ TEST(NaipeTest, TestRepr) {
     Naipe n3(35);
     EXPECT_EQ(n3.repr(), "10C") <<"Should be 10C but gave "<< n3.repr()<<endl;
 
-    Naipe n4(51);
-    EXPECT_EQ(n4.repr(), "KD") <<"Should be KD but gave "<< n4.repr()<<endl;
 };
 
+TEST(TestEqual, NaipeTest) {
+   Naipe n1(13);
+   Naipe n2(13);
+   EXPECT_EQ(n1, n2);
+
+   EXPECT_EQ(n1, Naipe(n1.numero(), n1.palo()));
+   EXPECT_EQ(Naipe(23), Naipe(23));
+   EXPECT_EQ(Naipe(32), Naipe(32));
+
+    Naipe n(51);
+    EXPECT_EQ(n, Naipe(n.numero(), n.palo())) <<"Should be KD but gave "<< n.repr()<<endl;
+    n = Naipe(14);
+    EXPECT_EQ(n, Naipe(n.numero(), n.palo())) <<"Should be KD but gave "<< n.repr()<<endl;
+    n = Naipe(0);
+    EXPECT_EQ(n, Naipe(n.numero(), n.palo())) <<"Should be KD but gave "<< n.repr()<<endl;
+
+
+    Naipe n7(13,3);
+    EXPECT_EQ(n7.repr(), "KD") <<"Should be KD but gave "<< n7.repr()<<endl;
+   EXPECT_NE(Naipe(23), Naipe(43));
+};
