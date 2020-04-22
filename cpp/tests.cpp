@@ -4,7 +4,7 @@
 
 using namespace std;
 
-TEST(TestRepr, NaipeTest) {
+TEST(NaipeTests, TestRepr) {
     Naipe nn(1);
     EXPECT_EQ(nn.palo(), 0);
     EXPECT_EQ(nn.numero(), 2);
@@ -18,7 +18,7 @@ TEST(TestRepr, NaipeTest) {
 
 };
 
-TEST(TestEqual, NaipeTest) {
+TEST(NaipeTests, TestEqual) {
    Naipe n1(13);
    Naipe n2(13);
    EXPECT_EQ(n1, n2);
