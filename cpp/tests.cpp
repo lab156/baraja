@@ -74,3 +74,17 @@ TEST(NaipeTests, TestCharContructor) {
     n = Naipe("AH");
     EXPECT_EQ(n, Naipe(n.numero(), n.palo()));
 };
+
+
+TEST(Prizes, PrizeValues) {
+    EXPECT_EQ(Loss, 0);
+    EXPECT_EQ(JacksOrBetter, 1);
+    EXPECT_EQ(TwoPair, 2);
+    EXPECT_EQ(ThreeOfAKind, 3);
+    EXPECT_EQ(Straight, 4);
+    EXPECT_EQ(Flush, 6);
+    EXPECT_EQ(FullHouse, 9);
+    EXPECT_EQ(Poker, 25);
+    EXPECT_EQ(StraightFlush, 50);
+    EXPECT_EQ(RoyalFlush, 250);
+};

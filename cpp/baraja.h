@@ -1,6 +1,7 @@
 #include <string.h>
 #include <assert.h>
 #include <ctype.h>
+#include <set>
 // Equivalent of baraja.py implementation of classes Naipe, Baraja
 // shuffle algorithm: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
 // compiles with: g++ juego_en.cpp
@@ -31,6 +32,24 @@ class Naipe {
         std::string numero_char();
         std::string palo_char(); 
         std::string repr() { return (this->numero_char()).append(this->palo_char()); };
+};
+
+enum Prize {
+    Loss = 0,
+    JacksOrBetter = 1,
+    TwoPair = 2,
+    ThreeOfAKind = 3,
+    Straight = 4,
+    Flush = 6,
+    FullHouse = 9,
+    Poker = 25,
+    StraightFlush = 50,
+    RoyalFlush = 250
+};
+
+class Mano: public std::set<Naipe> {
+    public:
+        std::string repr() { return "hola"; };
 };
 
 Naipe::Naipe(std::string str) {
