@@ -4,7 +4,7 @@
 
 using namespace std;
 
-TEST(NaipeTests, TestRepr) {
+TEST(NaipeTests, TestStringRepr) {
     Naipe nn(1);
     EXPECT_EQ(nn.palo(), 0);
     EXPECT_EQ(nn.numero(), 2);
@@ -18,7 +18,7 @@ TEST(NaipeTests, TestRepr) {
 
 };
 
-TEST(NaipeTests, TestEqual) {
+TEST(NaipeTests, TestEqualOperator) {
    Naipe n1(13);
    Naipe n2(13);
    EXPECT_EQ(n1, n2);
@@ -38,4 +38,39 @@ TEST(NaipeTests, TestEqual) {
     Naipe n7(13,3);
     EXPECT_EQ(n7.repr(), "KD") <<"Should be KD but gave "<< n7.repr()<<endl;
    EXPECT_NE(Naipe(23), Naipe(43));
+};
+
+
+TEST(NaipeTests, TestGetPaloFromString) {
+    EXPECT_EQ(get_palo_from_str('S'), 0);
+    EXPECT_EQ(get_palo_from_str('H'), 1);
+    EXPECT_EQ(get_palo_from_str('C'), 2);
+    EXPECT_EQ(get_palo_from_str('D'), 3);
+
+    try {
+        get_palo_from_str('U');
+    }
+    catch (int ee) {
+        EXPECT_EQ(ee, 20);
+    }
+};
+
+TEST(NaipeTests, TestCharContructor) {
+    Naipe n("QC");
+    EXPECT_EQ(n, Naipe(n.numero(), n.palo()));
+
+    n = Naipe(24);
+    EXPECT_EQ(n, Naipe(n.numero(), n.palo()));
+
+    n = Naipe(51);
+    EXPECT_EQ(n, Naipe(n.numero(), n.palo()));
+
+    n = Naipe("3H");
+    EXPECT_EQ(n, Naipe(n.numero(), n.palo()));
+    n = Naipe("7D");
+    EXPECT_EQ(n, Naipe(n.numero(), n.palo()));
+    n = Naipe("2S");
+    EXPECT_EQ(n, Naipe(n.numero(), n.palo()));
+    n = Naipe("AH");
+    EXPECT_EQ(n, Naipe(n.numero(), n.palo()));
 };

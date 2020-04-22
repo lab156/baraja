@@ -9,6 +9,8 @@
 
 const int DECK_SIZE = 52;
 
+int get_palo_from_str(char c);
+
 class Naipe {
     private:
 // Internally implemented as just an int value 
@@ -18,6 +20,7 @@ class Naipe {
     public:
         Naipe(int N) { assert(N < DECK_SIZE); naipe = N; }; 
         Naipe(int numero, int palo) : Naipe( numero - 1 + palo*13 ) {};
+        Naipe(std::string str);
 
         friend bool operator == (const Naipe &lhs, const Naipe &rhs) { return lhs.naipe == rhs.naipe; };
         friend bool operator != (const Naipe &lhs, const Naipe &rhs) { return !(lhs == rhs); };
@@ -29,6 +32,53 @@ class Naipe {
         std::string palo_char(); 
         std::string repr() { return (this->numero_char()).append(this->palo_char()); };
 };
+
+Naipe::Naipe(std::string str) {
+    int numero, palo;
+    switch (str[0]) {
+        case '1': // has to be folowed by 0
+            assert(str[1] == '0');
+            numero = 10;
+            palo = get_palo_from_str(str[2]);
+            break;
+        case 'A':
+            numero = 1;
+            palo = get_palo_from_str(str[1]);
+            break;
+        case 'J':
+            numero = 11;
+            palo = get_palo_from_str(str[1]);
+            break;
+        case 'Q':
+            numero = 12;
+            palo = get_palo_from_str(str[1]);
+            break;
+        case 'K':
+            numero = 13;
+            palo = get_palo_from_str(str[1]);
+            break;
+        default:
+            assert(isdigit(str[0]));
+            numero = str[0] - 48; // ASCII trick
+            palo = get_palo_from_str(str[1]);
+            break;
+    };
+    *this = Naipe(numero, palo);
+};
+
+int get_palo_from_str(char c) {
+    switch (c) {
+        case 'S':
+            return 0;
+        case 'H':
+            return 1;
+        case 'C':
+            return 2;
+        case 'D':
+            return 3;
+        default:
+            throw 20; // This case should raise an error
+    }};
 
 std::string Naipe::numero_char() {
     switch (int val = this->numero()) {
