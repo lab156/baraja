@@ -57,6 +57,10 @@ class BasicResults(ut.TestCase):
         self.assertEqual(None, man.hay_premio())
         self.assertEqual(Prize.Loss, man.prize())
 
+        man = Mano([(13,3),(13,1),(13,2),(8,3),(9,2)])
+        self.assertIn('three of a kind', man.hay_premio().lower())
+        self.assertEqual(Prize.ThreeOfAKind, man.prize())
+
         man = Mano([(13,3),(13,1),(13,2),(9,3),(9,2)])
         self.assertIn('full house', man.hay_premio().lower())
         self.assertEqual(Prize.FullHouse, man.prize())
@@ -277,6 +281,14 @@ class BasicResults(ut.TestCase):
         self.assertEqual('royal flush', man.hay_premio().lower())
         self.assertEqual('royal flush', man.hay_premio().lower())
 
+    def test_premios5(self):
+        B = Baraja()
+        B.revolver()
+        start_lst = [Naipe('AH'), Naipe('AS'), Naipe('JH'), Naipe('JD'), Naipe('KH')]
+        B.start_with(start_lst)
+        man = B.sacar_mano(5)
+        self.assertEqual('two pair', man.hay_premio().lower())
+        
     def test_randNaipe_alot(self):
         B = Baraja()
         for _ in range(1000):
