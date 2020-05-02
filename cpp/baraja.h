@@ -83,6 +83,8 @@ class Mano: public std::set<Naipe> {
         bool is_poker(int &carta);
         bool is_two_pair(int &carta1, int &carta2);
         bool is_full_house(int &carta1, int &carta2); //first card is the triple
+        bool is_flush(); //conflates with royal flush and straight flush
+        bool is_straight(); //conflates with and straight flush royal flush. 
 };
 
 Mano::Mano(std::vector<std::string> lst) {
@@ -191,6 +193,35 @@ bool Mano::is_two_pair(int &carta1, int &carta2) {
     }
     else
         return false;
+};
+
+bool Mano::is_flush() {
+    assert(this->size() == 5);
+    int first_palo = (*this->begin()).palo();
+    unsigned int same_palo_cnt = 0;
+    for (const Naipe &n : *this) {
+        if (n.palo() == first_palo) { same_palo_cnt++; };
+    };
+    return (same_palo_cnt == this->size()) ? true : false;
+};
+
+bool Mano::is_straight() {
+    assert(this->size() == 5);
+    std::set<int> num_set;
+    for (const Naipe &n : *this) {
+        num_set.insert(n.numero());
+    };
+    int low = *num_set.begin();
+    int high = *num_set.rbegin();
+    if (num_set.size() == 5) {
+    if ((high - low) == 4 )
+        return true;
+    else { //check if it is a high straight
+        if ((low == 1) & (high == 13) & (*next(num_set.begin()) == 10))
+            return true;
+    }
+    } 
+    return false;
 };
 
 Naipe::Naipe(std::string str) {

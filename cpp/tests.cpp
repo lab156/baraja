@@ -277,3 +277,43 @@ TEST(ManoTests, FullHouse) {
     m1 = Mano({"AH", "2C", "AS", "3H", "AD"});
     EXPECT_EQ(m1.is_full_house(c1, c2), false);
 };
+
+TEST(ManoTests, Flush) {
+    Mano m1({"2H", "2C", "2S", "3H", "3D"});
+    EXPECT_EQ(m1.is_flush(), false);
+
+    m1 = Mano({"AH", "2H", "5H", "3H", "KH"});
+    EXPECT_EQ(m1.is_flush(), true);
+
+    m1 = Mano({"AD", "2D", "5D", "3D", "KD"});
+    EXPECT_EQ(m1.is_flush(), true);
+};
+
+TEST(ManoTests, Straight) {
+    Mano m1({"2H", "2C", "2S", "3H", "3D"});
+    EXPECT_EQ(m1.is_straight(), false);
+
+    m1 = Mano({"AH", "2H", "5H", "3H", "KH"});
+    EXPECT_EQ(m1.is_straight(), false);
+
+    m1 = Mano({"AD", "2D", "5D", "3D", "KD"});
+    EXPECT_EQ(m1.is_straight(), false);
+
+    m1 = Mano({"AD", "2H", "5D", "3D", "4D"});
+    EXPECT_EQ(m1.is_straight(), true);
+
+    m1 = Mano({"JD", "KD", "QD", "10D", "9D"});
+    EXPECT_EQ(m1.is_straight(), true);
+
+    m1 = Mano({"JD", "KD", "KH", "10D", "9D"});
+    EXPECT_EQ(m1.is_straight(), false);
+
+    m1 = Mano({"JD", "KD", "AH", "10D", "9D"});
+    EXPECT_EQ(m1.is_straight(), false);
+
+    m1 = Mano({"JC", "KD", "AH", "10D", "JD"});
+    EXPECT_EQ(m1.is_straight(), false);
+
+    m1 = Mano({"QD", "KD", "AH", "10D", "JD"});
+    EXPECT_EQ(m1.is_straight(), true);
+};
