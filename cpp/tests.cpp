@@ -379,4 +379,7 @@ TEST(ManoTests, Prize) {
 
     m1 = Mano({"AH", "2C", "AS", "3H", "KD"});
     EXPECT_EQ(m1.prize(), JacksOrBetter);
+
+    m1 = Mano({"AH", "2D", "6S", "3H", "KD"});
+    EXPECT_EQ(m1.prize(), Loss);
 };
