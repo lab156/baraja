@@ -84,8 +84,12 @@ class Mano: public std::set<Naipe> {
         bool is_two_pair(int &carta1, int &carta2);
         bool is_full_house(int &carta1, int &carta2); //first card is the triple
         bool is_flush(); //conflates with royal flush and straight flush
-        bool is_straight(); //conflates with and straight flush royal flush. 
+        bool is_straight(); //conflates with straight-flush and royal-flush. 
+        bool is_straight_flush() { return this->is_flush() && this->is_straight(); };//conflates with royal flush
+        bool is_royal_flush() ;
+        Prize prize();
 };
+
 
 Mano::Mano(std::vector<std::string> lst) {
     for (const std::string &s : lst){
@@ -108,6 +112,38 @@ void Mano::print() {
                 std::cout<<it->repr()<<" ";
             std::cout<<std::endl;
         };
+
+Prize Mano::prize() {
+        //Guaranteed to return a prize or loss
+        Prize premio;
+        int carta1, carta2;
+        if (this->is_jacks_or_better(carta1))
+            premio = JacksOrBetter;
+        else if (this->is_full_house(carta1, carta2))
+            //FULL HOUSE TIENE QUE IR ANTES DE 3 of a kind
+            //PORQUE LOS DOS SE DISPARAN AL MISMO TIEMPO.
+            premio = FullHouse;
+        else if (this->is_three_of_a_kind(carta1))
+            //DEBERIA DE DECIR DE QUE ES EL PAR
+            premio = ThreeOfAKind;
+        else if (this->is_poker(carta1))
+            //DEBERIA DE DECIR DE QUE ES EL POQUER
+            premio = Poker;
+        else if (this->is_two_pair(carta1, carta2))
+            premio = TwoPair;
+        else if (this->is_royal_flush())
+            premio = RoyalFlush;
+        else if (this->is_straight_flush())
+            premio = StraightFlush;
+        else if (this->is_straight())
+            premio = Straight;
+        else if (this->is_flush())
+            premio = Flush;
+        else
+            premio = Loss;
+
+        return premio;
+};
 
 bool Mano::is_jacks_or_better(int &carta) {
     assert(this->size() == 5);
@@ -223,6 +259,20 @@ bool Mano::is_straight() {
     } 
     return false;
 };
+
+// Straigh Flush is defined in the class definition
+
+bool Mano::is_royal_flush() {
+    int contains_A = 0;
+    int contains_10 = 0;
+    for (const Naipe &n : *this) {
+        if (n.numero() == 1) contains_A++;
+        if (n.numero() == 10) contains_10++;
+    };
+
+    return is_straight_flush() && contains_A > 0 && contains_10 > 0;
+};
+
 
 Naipe::Naipe(std::string str) {
     int numero, palo;

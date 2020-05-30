@@ -317,3 +317,66 @@ TEST(ManoTests, Straight) {
     m1 = Mano({"QD", "KD", "AH", "10D", "JD"});
     EXPECT_EQ(m1.is_straight(), true);
 };
+
+TEST(ManoTests, StraightFlush) {
+    Mano m1({"2H", "2C", "2S", "3H", "3D"});
+    EXPECT_EQ(m1.is_straight_flush(), false);
+
+    m1 = Mano({"JD", "KD", "QD", "10D", "9D"});
+    EXPECT_EQ(m1.is_straight_flush(), true);
+
+    m1 = Mano({"AH", "2H", "5H", "3H", "KH"});
+    EXPECT_EQ(m1.is_straight_flush(), false);
+
+    m1 = Mano({"AH", "JH", "10H", "QH", "KH"});
+    EXPECT_EQ(m1.is_straight_flush(), true);
+
+    m1 = Mano({"AH", "2H", "5H", "3H", "4H"});
+    EXPECT_EQ(m1.is_straight_flush(), true);
+};
+
+TEST(ManoTests, RoyalFlush) {
+    Mano m1({"2H", "2C", "2S", "3H", "3D"});
+    EXPECT_EQ(m1.is_royal_flush(), false);
+
+    m1 = Mano({"JD", "KD", "QD", "10D", "9D"});
+    EXPECT_EQ(m1.is_royal_flush(), false);
+
+    m1 = Mano({"AH", "2H", "5H", "3H", "KH"});
+    EXPECT_EQ(m1.is_royal_flush(), false);
+
+    m1 = Mano({"AH", "JH", "10H", "QH", "KH"});
+    EXPECT_EQ(m1.is_royal_flush(), true);
+
+    m1 = Mano({"AH", "2H", "5H", "3H", "4H"});
+    EXPECT_EQ(m1.is_royal_flush(), false);
+};
+
+TEST(ManoTests, Prize) {
+    Mano m1({"AH", "JH", "10H", "QH", "KH"});
+    EXPECT_EQ(m1.prize(), RoyalFlush);
+
+    m1 = Mano({"9H", "JH", "10H", "QH", "KH"});
+    EXPECT_EQ(m1.prize(), StraightFlush);
+
+    m1 = Mano({"AD", "2H", "5D", "3D", "4D"});
+    EXPECT_EQ(m1.prize(), Straight);
+
+    m1 = Mano({"AH", "2H", "5H", "3H", "KH"});
+    EXPECT_EQ(m1.prize(), Flush);
+
+    m1 = Mano({"3H", "3C", "6S", "6H", "6D"}); // full house
+    EXPECT_EQ(m1.prize(), FullHouse);
+
+    m1 = Mano({"2H", "2C", "4S", "KH", "KD"});
+    EXPECT_EQ(m1.prize(), TwoPair);
+
+    Mano m3 = {Naipe("AC"), Naipe("QC"), Naipe("AS"), Naipe("AH"), Naipe("AD")};
+    EXPECT_EQ(m3.prize(), Poker);
+
+    m1 = Mano({"AH", "AC", "AS", "3H", "KD"});
+    EXPECT_EQ(m1.prize(), ThreeOfAKind);
+
+    m1 = Mano({"AH", "2C", "AS", "3H", "KD"});
+    EXPECT_EQ(m1.prize(), JacksOrBetter);
+};
