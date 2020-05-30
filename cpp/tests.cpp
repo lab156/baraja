@@ -383,3 +383,9 @@ TEST(ManoTests, Prize) {
     m1 = Mano({"AH", "2D", "6S", "3H", "KD"});
     EXPECT_EQ(m1.prize(), Loss);
 };
+
+
+TEST(BarajaTests, Print) {
+    Baraja B;
+    B.print(15);
+};

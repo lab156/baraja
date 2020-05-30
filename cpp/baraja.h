@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <set>
+#include <array>
 #include <vector>
 // Equivalent of baraja.py implementation of classes Naipe, Baraja
 // shuffle algorithm: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
@@ -25,6 +26,8 @@ class Naipe {
 // 0 = AS, 13 = AH, 26 = AC, 39 = AD, 51 = KD 
         unsigned short naipe;
     public:
+        Naipe() { };
+        ~Naipe() { };
         Naipe(int N) { assert(N < DECK_SIZE); naipe = N; }; 
         Naipe(int numero, int palo) : Naipe( numero - 1 + palo*13 ) {};
         Naipe(std::string str);
@@ -90,6 +93,24 @@ class Mano: public std::set<Naipe> {
         Prize prize();
 };
 
+class Baraja: public std::array<Naipe, 52> {
+    public:
+        Baraja();
+      void print(int cuantas);
+};
+
+Baraja::Baraja() {
+    for (int i=0; i<52; i++) {
+        (*this)[i] = Naipe(i);
+    }
+};
+
+void Baraja::print(int cuantas) {
+    for (int i=0; i<cuantas; i++) {
+        std::cout<<(*this)[i].repr()<<" ";
+    };
+    std::cout<<std::endl;
+};
 
 Mano::Mano(std::vector<std::string> lst) {
     for (const std::string &s : lst){
