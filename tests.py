@@ -13,8 +13,7 @@ class BasicResults(ut.TestCase):
         Algo con lo que pase bastante apuro fue
         haciendo que se pudiera hacer conjuntos con
         elementos de la clase Mano'''
-        conjunto = set()
-        conjunto.add(self.baraja.revolver().sacar_mano(5))
+        conjunto = {self.baraja.revolver().sacar_mano(5)}
         conjunto.add(self.baraja.sacar_mano(4))
         conjunto.add(self.baraja.sacar_mano(14))
         self.assertEqual(len(conjunto), 3)
@@ -173,7 +172,7 @@ class BasicResults(ut.TestCase):
 
         B = Baraja()
         X = 0.0
-        for i in range(int(n)):
+        for _ in range(int(n)):
             B.revolver()
             if Naipe((1,0)) == B.sacar_lista_naipes(1)[0]:
                 X += 1.0
@@ -194,7 +193,7 @@ class BasicResults(ut.TestCase):
         B = Baraja()
         xi2 = lambda a,k: chi2.ppf(a,k)
         alfa = 0.05
-        for i in range(int(n)):
+        for _ in range(int(n)):
             B.revolver()
             if B.sacar_mano(5).is_full_house():
                 K += 1
