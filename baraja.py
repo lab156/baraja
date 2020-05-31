@@ -26,10 +26,7 @@ class Naipe():
                 num, palo = r.group(1),r.group(2)
             except AttributeError:
                 raise ValueError("The string %s has incorrect format"%naipe)
-            if num in num_dict.keys():
-                self.numero = num_dict[num]
-            else:
-                self.numero = int(num)
+            self.numero = num_dict[num] if num in num_dict else int(num)
             self.palo = palo_dict[palo]
         else:
             try:
@@ -147,10 +144,7 @@ class Naipe():
         Retorna el codigo del simbolo unicode de un Naipe
         '''
         rep = 0x1f0A0
-        if self.numero <= 11:
-            rep += self.numero
-        else:
-            rep += self.numero + 1
+        rep += self.numero if self.numero <= 11 else self.numero + 1
         if self.is_spades():
             rep += 0x0
         elif self.is_hearts():
@@ -239,22 +233,21 @@ class Mano(frozenset):
         '''
         el_par = []
         for i in self:
-            cuantas_iguales = sum([1 for j in self if i[0] == j[0]])
+            cuantas_iguales = sum(1 for j in self if i[0] == j[0])
             if cuantas_iguales == 2:
                 el_par.append(i)
             elif cuantas_iguales > 2:
                 return False
         if len(el_par) == 2:
             valor = el_par[0][0]
-            salida = True if (valor >= 11 or valor == 1)  else False
-            return salida
+            return True if (valor >= 11 or valor == 1)  else False
         else:
             return False
 
     @check_has_5_cards
     def is_three_of_a_kind(self):
         for i in self:
-            cuantas_iguales = sum([1 for j in self if i[0] == j[0]])
+            cuantas_iguales = sum(1 for j in self if i[0] == j[0])
             if cuantas_iguales == 3:
                 return True
         else:
@@ -262,7 +255,7 @@ class Mano(frozenset):
     
     def is_poker(self):
         for i in self:
-            cuantas_iguales = sum([1 for j in self if i[0] == j[0]])
+            cuantas_iguales = sum(1 for j in self if i[0] == j[0])
             if cuantas_iguales == 4:
                 return True
         else:
@@ -273,18 +266,17 @@ class Mano(frozenset):
         hay dos pares pero de la misma carta'''
         num_pares = 0
         for i in self:
-            cuantas_iguales = sum([1 for j in self if i[0] == j[0]])
+            cuantas_iguales = sum(1 for j in self if i[0] == j[0])
             if cuantas_iguales == 2:
                 num_pares += 1
-        salida = True if num_pares == 4 else False
-        return salida
+        return True if num_pares == 4 else False
 
     @check_has_5_cards
     def is_full_house(self):
         '''Full House es three of a kind y un par'''
         if self.is_three_of_a_kind():
             for i in self:
-                cuantas_iguales = sum([1 for j in self if i[0] == j[0]])
+                cuantas_iguales = sum(1 for j in self if i[0] == j[0])
                 if cuantas_iguales == 2:
                     return True
             else:
@@ -295,7 +287,7 @@ class Mano(frozenset):
     @check_has_5_cards
     def is_flush(self):
         palo = next(iter(self))[1]
-        return len(self) == sum([1 for j in self if j[1] == palo])
+        return len(self) == sum(1 for j in self if j[1] == palo)
 
     @check_has_5_cards
     def is_straight_flush(self):
@@ -448,7 +440,7 @@ class Baraja():
         una mano de n (5 es default) naipes'''
         mano = self._cartas_[0:n]
         for i in range(1,14):
-            cuantas_ies = sum([1 for j in mano if j[0] == i])
+            cuantas_ies = sum(1 for j in mano if j[0] == i)
             if cuantas_ies == 3:
                 return True
         else:
@@ -553,10 +545,7 @@ class Baraja():
         sample_size: returns an estimate of the expected prize of a certain action (default is 1)
         '''
         sample_size = kwargs.get('sample_size', 1)
-        prize_sum = 0
-        for k in range(sample_size):
-            prize_sum += self.play(action, **kwargs).value
-
+        prize_sum = sum(self.play(action, **kwargs).value for _ in range(sample_size))
         return prize_sum/float(sample_size)
 
     def evaluate_eff(self, action, **kwargs):
@@ -597,9 +586,7 @@ class Baraja():
         kwargs: same as for evaluate_eff
         '''
         if action_lst == 'all':
-            res = []
-            for i in range(32):
-                res.append((i, self.evaluate_eff(i, **kwargs)))
+            res = [(i, self.evaluate_eff(i, **kwargs)) for i in range(32)]
         else:
             raise NotImplementedError()
 
