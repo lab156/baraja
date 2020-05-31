@@ -1,8 +1,8 @@
 # Makefile for gtest examples
 
 GOOGLE_TEST_LIB = gtest
-LOC = /home/luis/Paquetes/googletest/lib
-GOOGLE_TEST_INCLUDE = /home/luis/Paquetes/googletest/googletest/include
+LOC = ~/Paquetes/googletest/lib
+GOOGLE_TEST_INCLUDE = ~/Paquetes/googletest/googletest/include
 
 G++ = g++
 G++_FLAGS = -c -Wall -I $(GOOGLE_TEST_INCLUDE)
