@@ -97,6 +97,8 @@ class Baraja: public std::array<Naipe, 52> {
     public:
         Baraja();
       void print(int cuantas);
+      int index(Naipe); //should always find the naipe
+      void swap(Naipe, Naipe);
 };
 
 Baraja::Baraja() {
@@ -105,9 +107,28 @@ Baraja::Baraja() {
     }
 };
 
+int Baraja::index(Naipe N) {
+    int senti = 0;
+    for (auto c : *this) {
+        if (c == N) break;
+        senti++;
+    };
+    return senti;
+};
+
+void Baraja::swap(Naipe n1, Naipe n2) {
+    int i1 = this->index(n1);
+    int i2 = this->index(n2);
+    (*this)[i1] = n2;
+    (*this)[i2] = n1;
+};
+
 void Baraja::print(int cuantas) {
-    for (int i=0; i<cuantas; i++) {
-        std::cout<<(*this)[i].repr()<<" ";
+    int senti = 0;
+    for (auto c : *this) {
+        std::cout<<c.repr()<<" ";
+        senti++;
+        if (senti > cuantas) break;
     };
     std::cout<<std::endl;
 };

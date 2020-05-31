@@ -389,3 +389,26 @@ TEST(BarajaTests, Print) {
     Baraja B;
     B.print(15);
 };
+
+TEST(BarajaTests, Index) {
+    Baraja B;
+    EXPECT_EQ(B.index(Naipe("AS")), 0);
+    EXPECT_EQ(B.index(Naipe("KD")), 51);
+
+    Naipe N("JH");
+    int Ind = B.index(N);
+    EXPECT_EQ(B[Ind], N);
+
+    N = Naipe("3C");
+    Ind = B.index(N);
+    EXPECT_EQ(B[Ind], N);
+};
+
+TEST(BarajaTests, Swap) {
+    Baraja B;
+    Naipe N1("AS");
+    Naipe N2("2S");
+    B.swap(N1, N2);
+    EXPECT_EQ(B.index(N1), 1);
+    EXPECT_EQ(B.index(N2), 0);
+};
