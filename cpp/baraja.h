@@ -4,6 +4,8 @@
 #include <set>
 #include <array>
 #include <vector>
+#include <time.h>
+#include <cstdlib>
 // Equivalent of baraja.py implementation of classes Naipe, Baraja
 // shuffle algorithm: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
 //
@@ -99,12 +101,16 @@ class Baraja: public std::array<Naipe, 52> {
       void print(int cuantas);
       int index(Naipe); //should always find the naipe
       void swap(Naipe, Naipe);
+      void shuffle();
 };
 
 Baraja::Baraja() {
+    srand((unsigned) time(NULL));
+
     for (int i=0; i<52; i++) {
         (*this)[i] = Naipe(i);
     }
+    
 };
 
 int Baraja::index(Naipe N) {
@@ -114,6 +120,14 @@ int Baraja::index(Naipe N) {
         senti++;
     };
     return senti;
+};
+
+void Baraja::shuffle(){
+    int j;
+    for (int i=(DECK_SIZE-1); i > 0; i--) {
+        j = rand()%(i+1);
+        this->swap((*this)[i], (*this)[j]);
+    }
 };
 
 void Baraja::swap(Naipe n1, Naipe n2) {

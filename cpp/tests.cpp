@@ -2,8 +2,14 @@
 #include "baraja.h"
 #include <gtest/gtest.h>
 #include <set>
+#include <time.h>
+#include <cmath>
 
 using namespace std;
+
+double zvalue( double phat, double p0, int n ) {
+    return (phat - p0)/sqrt(p0*(1-p0)/n);
+};
 
 TEST(NaipeTests, TestStringRepr) {
     Naipe nn(1);
@@ -411,4 +417,45 @@ TEST(BarajaTests, Swap) {
     B.swap(N1, N2);
     EXPECT_EQ(B.index(N1), 1);
     EXPECT_EQ(B.index(N2), 0);
+
+    N1 = Naipe("3H");
+    N2 = Naipe("JD");
+    int orig1 = B.index(N1);
+    int orig2 = B.index(N2);
+    B.swap(N1,N2);
+    EXPECT_EQ(B.index(N2), orig1);
+    B.swap(N1,N2);
+    EXPECT_EQ(orig1, B.index(N1));
+    EXPECT_EQ(orig2, B.index(N2));
 };
+
+TEST(BarajaTests, Shuffle) {
+   Baraja B;
+   int c1 = 0, c2 = 0, c3 = 0;
+   int N = 100000;
+   Naipe N1("2H");
+   //unsigned int seed = time(NULL);
+   B.shuffle();
+   for (int i=0; i<N; i++) {
+       B.shuffle();
+       //B.print(15);
+       if (B[0] == N1)
+       {c1++;};
+       if (B[23] == N1)
+       { c2++;};
+       if (B[51] == N1)
+       {c3++;};
+   }
+   double p1 = (double)c1/(double)N;
+   double p2 = (double)c2/(double)N;
+   double p3 = (double)c3/(double)N;
+   double p0 = 1.0/52.0;
+   cout<<c1<<": "<<zvalue(p1, p0, N)<<"   "<<c2<<": "<<zvalue(p2, p0, N)<<"   "<<c3<<": "<<zvalue(p3, p0, N)<<"   "<<endl;
+   EXPECT_LT(zvalue(p1, p0, N), 3);
+   EXPECT_LT(-3, zvalue(p1, p0, N));
+   EXPECT_LT(zvalue(p2, p0, N), 3);
+   EXPECT_LT(-3, zvalue(p2, p0, N));
+   EXPECT_LT(zvalue(p3, p0, N), 3);
+   EXPECT_LT(-3, zvalue(p3, p0, N));
+};
+
