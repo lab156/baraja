@@ -5,7 +5,8 @@
 #include <array>
 #include <vector>
 #include <time.h>
-#include <cstdlib>
+#include <iomanip>
+//#include <cstdlib>
 // Equivalent of baraja.py implementation of classes Naipe, Baraja
 // shuffle algorithm: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
 //
@@ -20,6 +21,39 @@
 const int DECK_SIZE = 52;
 
 int get_palo_from_str(char c);
+
+std::vector<int> actions[32] = {{},
+{0,},
+{1,},
+{2,},
+{3,},
+{4,},
+{0, 1},
+{0, 2},
+{0, 3},
+{0, 4},
+{1, 2},
+{1, 3},
+{1, 4},
+{2, 3},
+{2, 4},
+{3, 4},
+{0, 1, 2},
+{0, 1, 3},
+{0, 1, 4},
+{0, 2, 3},
+{0, 2, 4},
+{0, 3, 4},
+{1, 2, 3},
+{1, 2, 4},
+{1, 3, 4},
+{2, 3, 4},
+{0, 1, 2, 3},
+{0, 1, 2, 4},
+{0, 1, 3, 4},
+{0, 2, 3, 4},
+{1, 2, 3, 4},
+{0, 1, 2, 3, 4}};
 
 class Naipe {
     private:
@@ -97,20 +131,22 @@ class Mano: public std::set<Naipe> {
 
 class Baraja: public std::array<Naipe, 52> {
     public:
-        Baraja();
+      Baraja(unsigned int seed_int);
+      Baraja() : Baraja(time(NULL)) {};
       void print(int cuantas);
       int index(Naipe); //should always find the naipe
       void swap(Naipe, Naipe);
       void shuffle();
+      void start_with(std::vector<Naipe> card_lst);
+      Prize play(int action);
 };
 
-Baraja::Baraja() {
-    srand((unsigned) time(NULL));
+Baraja::Baraja(unsigned int seed_int) {
+    srand(seed_int);
 
     for (int i=0; i<52; i++) {
         (*this)[i] = Naipe(i);
     }
-    
 };
 
 int Baraja::index(Naipe N) {
@@ -120,6 +156,31 @@ int Baraja::index(Naipe N) {
         senti++;
     };
     return senti;
+};
+
+Prize Baraja::play(int action) {
+    Naipe temp[5];
+    std::vector<int> act = actions[action];
+    int i = 0;
+
+    for (int j=0; j<5; j++){
+        if (j == act[i]) {
+            temp[j] = (*this)[i+5];
+            i++;
+        }
+        else
+            temp[j] = (*this)[j];
+    }
+    Mano M(temp, temp+5);
+    return M.prize();
+};
+
+void Baraja::start_with(std::vector<Naipe> card_lst) {
+    int i = 0;
+    for (auto c : card_lst) {
+        this->swap((*this)[i], c);
+        i++;
+    }
 };
 
 void Baraja::shuffle(){
@@ -138,9 +199,9 @@ void Baraja::swap(Naipe n1, Naipe n2) {
 };
 
 void Baraja::print(int cuantas) {
-    int senti = 0;
+    int senti = 1;
     for (auto c : *this) {
-        std::cout<<c.repr()<<" ";
+        std::cout<<std::setw(3)<<c.repr()<<" ";
         senti++;
         if (senti > cuantas) break;
     };

@@ -475,7 +475,8 @@ class Baraja():
 
     def preview(self, num=10):
         """
-        For debugging purposes: returns a console friendly list of the firs num naipes in the baraja without updating _cnt_
+        For debugging purposes: returns a console friendly list of 
+        the first num naipes in the baraja without updating _cnt_
         """
         return [Naipe(n).repr_image_name() for n in self._cartas_[:num]]
 
@@ -532,7 +533,8 @@ class Baraja():
         and return the enum Prize (not a value)
 
         options:
-          rand_sampling: default is true, avoid from randomly sampling the rest of the deck. Just get the next cards
+          rand_sampling: default is true, avoid from randomly sampling the rest 
+          of the deck. Just get the next cards
         '''
         mano_size = kwargs.get('mano_size', 5)
         rand_sampling = kwargs.get('rand_sampling', True)

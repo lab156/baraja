@@ -8,15 +8,15 @@ G++ = g++
 G++_FLAGS = -c -Wall -I $(GOOGLE_TEST_INCLUDE)
 LD_FLAGS = -L $(LOC) -l $(GOOGLE_TEST_LIB) -l pthread
 
-OBJECTS = main.o tests.o 
+OBJECTS = main.o tests.o
 TARGET = tests.exe
 
 all: $(TARGET)
 
-$(TARGET): $(OBJECTS)
+$(TARGET): $(OBJECTS) 
 	g++ -o $(TARGET) $(OBJECTS) $(LD_FLAGS)
 
-%.o : %.cpp
+%.o : %.cpp baraja.h
 	$(G++) $(G++_FLAGS) $<
 
 clean:

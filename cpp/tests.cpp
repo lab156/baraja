@@ -4,6 +4,7 @@
 #include <set>
 #include <time.h>
 #include <cmath>
+#include <vector>
 
 using namespace std;
 
@@ -390,9 +391,10 @@ TEST(ManoTests, Prize) {
     EXPECT_EQ(m1.prize(), Loss);
 };
 
-
 TEST(BarajaTests, Print) {
     Baraja B;
+    B.print(15);
+    B.shuffle();
     B.print(15);
 };
 
@@ -427,12 +429,17 @@ TEST(BarajaTests, Swap) {
     B.swap(N1,N2);
     EXPECT_EQ(orig1, B.index(N1));
     EXPECT_EQ(orig2, B.index(N2));
+    //Test trivial swap
+    orig1 = B.index(N1);
+    B.swap(N1, N1);
+    orig2 = B.index(N1);
+    EXPECT_EQ(orig1, orig2);
 };
 
 TEST(BarajaTests, Shuffle) {
    Baraja B;
    int c1 = 0, c2 = 0, c3 = 0;
-   int N = 100000;
+   int N = 10000;
    Naipe N1("2H");
    //unsigned int seed = time(NULL);
    B.shuffle();
@@ -459,3 +466,44 @@ TEST(BarajaTests, Shuffle) {
    EXPECT_LT(-3, zvalue(p3, p0, N));
 };
 
+TEST(BarajaTests, StartWith) {
+    Baraja B;
+    vector<Naipe> card_lst{ Naipe("3H"), Naipe("KS"), Naipe("10C") };
+    B.start_with(card_lst);
+    EXPECT_EQ(B[0], card_lst[0]);
+    EXPECT_EQ(B[1], card_lst[1]);
+    EXPECT_EQ(B[2], card_lst[2]);
+};
+
+TEST(BarajaTests, Play) {
+    Baraja B;
+//    B.print(10);
+    Prize p = B.play(2);
+    EXPECT_EQ(p, 6);
+    B.start_with({Naipe("6C"), Naipe("6H"), Naipe("6D")});
+//    B.print(10);
+    EXPECT_EQ(B.play(4), Poker);
+    B.start_with({Naipe("7C"), Naipe("7H"), Naipe("KH"), Naipe("KS"), Naipe("7D")});
+    EXPECT_EQ(B.play(13), Poker);
+};
+
+TEST(BarajaTests, Play2) {
+    Baraja B((unsigned) 13);
+    B.shuffle();
+    EXPECT_EQ(B.play(6), ThreeOfAKind);
+};
+
+TEST(BarajaTests, Play3) {
+    Baraja B((unsigned) 25);
+    B.shuffle();
+    EXPECT_EQ(B.play(31), JacksOrBetter);
+};
+
+TEST(ActionsTests, Basic) {
+    std::vector<int> v1 = {0,};
+    std::vector<int> v2 = {2,4};
+    EXPECT_EQ(actions[1], v1);
+    EXPECT_EQ(actions[1][0], 0);
+    EXPECT_EQ(actions[14], v2);
+    EXPECT_EQ(actions[14][1], 4);
+};
