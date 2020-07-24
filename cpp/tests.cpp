@@ -516,6 +516,24 @@ TEST(BarajaTests, Play5) {
     EXPECT_EQ(B.play(31), Straight);
 };
 
+TEST(BarajaTests, PlayRandom) {
+    Baraja B;
+    B.shuffle();
+    int prize = 0;
+    for (int i=0; i<100; i++) 
+        prize += B.play(23, true);
+    EXPECT_LT(0, prize);
+};
+
+TEST(BarajaTests, Evaluate) {
+    Baraja B(81);
+    B.shuffle();
+    B.print(5);
+    float ex = B.evaluate(30, 1000);
+    cout<<"Eval is: "<<ex<<endl;
+    EXPECT_LT(0, ex);
+};
+
 TEST(ActionsTests, Basic) {
     std::vector<int> v1 = {0,};
     std::vector<int> v2 = {2,4};

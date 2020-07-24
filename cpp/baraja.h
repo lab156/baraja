@@ -140,7 +140,8 @@ class Baraja: public std::array<Naipe, 52> {
       void swap(Naipe, Naipe);
       void shuffle();
       void start_with(std::vector<Naipe> card_lst);
-      Prize play(int action);
+      Prize play(int action, bool sample_random);
+      float evaluate(int action, int samples);
 };
 
 Baraja::Baraja(unsigned int seed_int) {
@@ -160,20 +161,41 @@ int Baraja::index(Naipe N) {
     return senti;
 };
 
-Prize Baraja::play(int hold_action) {
+float Baraja::evaluate(int hold_action, int samples=1000) {
+    int prize_sum = 0;
+    for (int k = 0; k<samples; k++) {
+        prize_sum += this->play(hold_action, true);
+    }
+    return (float) prize_sum/(float) samples; 
+};
+
+Prize Baraja::play(int hold_action, bool sample_random=false) {
     Naipe temp[5];
     std::vector<int> hold = actions[hold_action];
 // Action is a vector with the indexes that are held
 // Replace with the cards that are right after the hand
 // Another option is to sample from the rest of the deck
-    int i = 0;
+//
+    // generate a set of ints that is either random or consecutive
+    std::set<int> replacements = {};
+    int r, repl_size = 5-hold.size();
+    if (sample_random) {
+        while ( replacements.size() < (unsigned) repl_size) {
+            r = 5 + rand()%47;
+            replacements.insert(r);
+        } 
+    }
+    else
+        for (r=0; r< repl_size; r++)  replacements.insert(5+r);
+
+    std::set<int>::iterator it = replacements.begin();
     for (int j = 0 ; j < 5; j++) {
         if ( std::binary_search(hold.begin(), hold.end(), j)) {
             temp[j] = (*this)[j];
         }
         else {
-            temp[j] = (*this)[i+5];
-            i++;
+            temp[j] = (*this).at(*it);
+            it++;
         }
     }
 
