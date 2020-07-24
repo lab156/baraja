@@ -482,21 +482,38 @@ TEST(BarajaTests, Play) {
     EXPECT_EQ(p, 6);
     B.start_with({Naipe("6C"), Naipe("6H"), Naipe("6D")});
 //    B.print(10);
-    EXPECT_EQ(B.play(4), Poker);
+    EXPECT_EQ(B.play(16), Poker);
     B.start_with({Naipe("7C"), Naipe("7H"), Naipe("KH"), Naipe("KS"), Naipe("7D")});
-    EXPECT_EQ(B.play(13), Poker);
+//    B.print(10);
+    EXPECT_EQ(B.play(18), Poker);
 };
 
 TEST(BarajaTests, Play2) {
     Baraja B((unsigned) 13);
     B.shuffle();
-    EXPECT_EQ(B.play(6), ThreeOfAKind);
+    //B.print(10);
+    EXPECT_EQ(B.play(25), ThreeOfAKind);
 };
 
 TEST(BarajaTests, Play3) {
     Baraja B((unsigned) 25);
     B.shuffle();
-    EXPECT_EQ(B.play(31), JacksOrBetter);
+    //B.print(10);
+    EXPECT_EQ(B.play(0), JacksOrBetter);
+};
+
+TEST(BarajaTests, Play4) {
+    Baraja B((unsigned) 221);
+    B.shuffle();
+    //B.print(10);
+    EXPECT_EQ(B.play(2), JacksOrBetter);
+};
+
+TEST(BarajaTests, Play5) {
+    Baraja B(29);
+    B.shuffle();
+    B.print(10);
+    EXPECT_EQ(B.play(31), Straight);
 };
 
 TEST(ActionsTests, Basic) {

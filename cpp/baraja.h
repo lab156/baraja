@@ -6,6 +6,7 @@
 #include <vector>
 #include <time.h>
 #include <iomanip>
+#include <algorithm>
 //#include <cstdlib>
 // Equivalent of baraja.py implementation of classes Naipe, Baraja
 // shuffle algorithm: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
@@ -22,6 +23,22 @@ const int DECK_SIZE = 52;
 
 int get_palo_from_str(char c);
 
+/* DEFINITION OF THE PRIZES 
+ * Defined as an enum. Loss is defined to be zero
+ */
+enum Prize {
+    Loss = 0,
+    JacksOrBetter = 1,
+    TwoPair = 2,
+    ThreeOfAKind = 3,
+    Straight = 4,
+    Flush = 6,
+    FullHouse = 9,
+    Poker = 25,
+    StraightFlush = 50,
+    RoyalFlush = 250
+};
+// Definition of the Hold actions
 std::vector<int> actions[32] = {{},
 {0,},
 {1,},
@@ -80,21 +97,6 @@ class Naipe {
         std::string repr() const { return (this->numero_char()).append(this->palo_char()); };
 };
 
-/* DEFINITION OF THE PRIZES 
- * Defined as an enum. Loss is defined to be zero
- */
-enum Prize {
-    Loss = 0,
-    JacksOrBetter = 1,
-    TwoPair = 2,
-    ThreeOfAKind = 3,
-    Straight = 4,
-    Flush = 6,
-    FullHouse = 9,
-    Poker = 25,
-    StraightFlush = 50,
-    RoyalFlush = 250
-};
 
 /* #####################################
  *      DEFINITION OF MANO CLASS
@@ -158,20 +160,24 @@ int Baraja::index(Naipe N) {
     return senti;
 };
 
-Prize Baraja::play(int action) {
+Prize Baraja::play(int hold_action) {
     Naipe temp[5];
-    std::vector<int> act = actions[action];
+    std::vector<int> hold = actions[hold_action];
+// Action is a vector with the indexes that are held
+// Replace with the cards that are right after the hand
+// Another option is to sample from the rest of the deck
     int i = 0;
-
-    for (int j=0; j<5; j++){
-        if (j == act[i]) {
+    for (int j = 0 ; j < 5; j++) {
+        if ( std::binary_search(hold.begin(), hold.end(), j)) {
+            temp[j] = (*this)[j];
+        }
+        else {
             temp[j] = (*this)[i+5];
             i++;
         }
-        else
-            temp[j] = (*this)[j];
     }
-    Mano M(temp, temp+5);
+
+    Mano M(temp, temp + 5);
     return M.prize();
 };
 
