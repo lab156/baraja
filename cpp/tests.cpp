@@ -564,7 +564,7 @@ TEST(BarajaTests, Evaluate3) {
     B.shuffle();
     B.print(5);
     auto start = high_resolution_clock::now();
-    float ex = B.evaluate(13, 5000000);
+    float ex = B.evaluate(13, 500);
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(stop - start);
     cout<<"Eval is: "<<ex<<" and took: "<<duration.count()<<endl;
