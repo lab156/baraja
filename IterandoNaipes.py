@@ -25,6 +25,11 @@ from baraja import Naipe, Mano, Baraja, Prize
 
 # %%time
 b = Baraja()
+b.start_with(map(Naipe,['6D', 'QH', '7H', '7S', '10C']))
+b.evaluate(13, sample_size=5000000)
+
+# %%time
+b = Baraja()
 b.start_with(map(Naipe,['3S', 'QS', 'JD', '7S', '6S']))
 res = []
 for i in range(32):

@@ -140,7 +140,7 @@ class Baraja: public std::array<Naipe, 52> {
       void swap(Naipe, Naipe);
       void shuffle();
       void start_with(std::vector<Naipe> card_lst);
-      Prize play(int action, bool sample_random);
+      Prize play(int action, int start_at); // start_at = -1 means pick at random
       float evaluate(int action, int samples);
 };
 
@@ -161,15 +161,8 @@ int Baraja::index(Naipe N) {
     return senti;
 };
 
-float Baraja::evaluate(int hold_action, int samples=1000) {
-    int prize_sum = 0;
-    for (int k = 0; k<samples; k++) {
-        prize_sum += this->play(hold_action, true);
-    }
-    return (float) prize_sum/(float) samples; 
-};
 
-Prize Baraja::play(int hold_action, bool sample_random=false) {
+Prize Baraja::play(int hold_action, int start_at=0) {
     Naipe temp[5];
     std::vector<int> hold = actions[hold_action];
 // Action is a vector with the indexes that are held
@@ -179,14 +172,14 @@ Prize Baraja::play(int hold_action, bool sample_random=false) {
     // generate a set of ints that is either random or consecutive
     std::set<int> replacements = {};
     int r, repl_size = 5-hold.size();
-    if (sample_random) {
+    if (start_at < 0) {
         while ( replacements.size() < (unsigned) repl_size) {
             r = 5 + rand()%47;
             replacements.insert(r);
         } 
     }
     else
-        for (r=0; r< repl_size; r++)  replacements.insert(5+r);
+        for (r=start_at; r< start_at+repl_size; r++)  replacements.insert(5+r);
 
     std::set<int>::iterator it = replacements.begin();
     for (int j = 0 ; j < 5; j++) {
@@ -201,6 +194,32 @@ Prize Baraja::play(int hold_action, bool sample_random=false) {
 
     Mano M(temp, temp + 5);
     return M.prize();
+};
+
+float Baraja::evaluate(int hold_action, int samples=1000) {
+    int prize_sum = 0;
+    std::vector<int> hold = actions[hold_action];
+    switch (hold.size()) {
+        case 5:
+            prize_sum = this->play(hold_action, -1);
+            break;
+        case 4:
+            if (samples > 47) {
+            samples = 47;
+            for (int k = 0; k < 47; k++) {
+                prize_sum += this->play(hold_action, k);
+            }}
+            else { // very small sampling, pick replacement at random
+            for (int k = 0; k < samples; k++) {
+                prize_sum += this->play(hold_action, -1);
+            }}
+            break;
+        default: 
+            for (int k = 0; k<samples; k++) {
+                prize_sum += this->play(hold_action, -1);
+            }
+    }
+    return (float) prize_sum/(float) samples; 
 };
 
 void Baraja::start_with(std::vector<Naipe> card_lst) {

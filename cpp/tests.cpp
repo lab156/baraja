@@ -5,8 +5,10 @@
 #include <time.h>
 #include <cmath>
 #include <vector>
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 double zvalue( double phat, double p0, int n ) {
     return (phat - p0)/sqrt(p0*(1-p0)/n);
@@ -512,8 +514,22 @@ TEST(BarajaTests, Play4) {
 TEST(BarajaTests, Play5) {
     Baraja B(29);
     B.shuffle();
-    B.print(10);
+    //B.print(10);
     EXPECT_EQ(B.play(31), Straight);
+};
+
+TEST(BarajaTests, Play6) {
+    Baraja B(29);
+    B.shuffle();
+    //B.print(30);
+    EXPECT_EQ(B.play(26,1), JacksOrBetter);
+};
+
+TEST(BarajaTests, Play7) {
+    Baraja B(29);
+    B.shuffle();
+    //B.print(30);
+    EXPECT_EQ(B.play(26,14), JacksOrBetter);
 };
 
 TEST(BarajaTests, PlayRandom) {
@@ -521,17 +537,39 @@ TEST(BarajaTests, PlayRandom) {
     B.shuffle();
     int prize = 0;
     for (int i=0; i<100; i++) 
-        prize += B.play(23, true);
+        prize += B.play(23, -1);
     EXPECT_LT(0, prize);
 };
 
 TEST(BarajaTests, Evaluate) {
     Baraja B(81);
     B.shuffle();
-    B.print(5);
+    //B.print(5);
     float ex = B.evaluate(30, 1000);
-    cout<<"Eval is: "<<ex<<endl;
+    //cout<<"Eval is: "<<ex<<endl;
     EXPECT_LT(0, ex);
+};
+
+TEST(BarajaTests, Evaluate2) {
+    Baraja B(81);
+    B.shuffle();
+    //B.print(5);
+    float ex = B.evaluate(31, 100);
+    //cout<<"Eval is: "<<ex<<endl;
+    EXPECT_EQ(0.0, ex);
+};
+
+TEST(BarajaTests, Evaluate3) {
+    Baraja B(71);
+    B.shuffle();
+    B.print(5);
+    auto start = high_resolution_clock::now();
+    float ex = B.evaluate(13, 5000000);
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<milliseconds>(stop - start);
+    cout<<"Eval is: "<<ex<<" and took: "<<duration.count()<<endl;
+    EXPECT_LT(0.063, ex);
+    //EXPECT_GT(0.064, ex);
 };
 
 TEST(ActionsTests, Basic) {
