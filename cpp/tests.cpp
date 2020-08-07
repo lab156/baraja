@@ -562,15 +562,59 @@ TEST(BarajaTests, Evaluate2) {
 TEST(BarajaTests, Evaluate3) {
     Baraja B(71);
     B.shuffle();
-    B.print(5);
-    auto start = high_resolution_clock::now();
+    //B.print(5);
+    //auto start = high_resolution_clock::now();
     float ex = B.evaluate(13, 500);
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<milliseconds>(stop - start);
-    cout<<"Eval is: "<<ex<<" and took: "<<duration.count()<<endl;
+    //auto stop = high_resolution_clock::now();
+    //auto duration = duration_cast<milliseconds>(stop - start);
+    //cout<<"Eval is: "<<ex<<" and took: "<<duration.count()<<endl;
     EXPECT_LT(0.063, ex);
     //EXPECT_GT(0.064, ex);
 };
+
+TEST(BarajaTests, ApproxBestMove) {
+    //Baraja B(71);
+    Baraja B;
+    B.shuffle();
+    B.start_with({Naipe("7H"), Naipe("JC"), Naipe("AD"), Naipe("5C"), Naipe("QS")});
+    B.print(5);
+    int best_move = B.approx_best_move(1500);
+    vector<int> hold_vec = actions[best_move];
+    for (int i=0; i<5; i++) {
+        if (binary_search(hold_vec.begin(), hold_vec.end(), i)) {
+            if (i==0)
+                cout<<"  "<<1;
+            else
+                cout<<"   "<<1;
+        }
+        else {
+            if (i==0)
+                cout<<"  "<<0;
+            else
+                cout<<"   "<<0;
+        };
+    };
+    cout<<endl;
+    cout<<"The best move found is: "<<best_move<<endl;
+    //EXPECT_GT(0.064, ex);
+    struct cnt {
+        int value = 0;
+    };
+    map<Prize, cnt> prize_map;
+    int N = 100000;
+    for (int i=0; i<N; i++) {
+        Prize P = B.play(best_move, -1);
+        prize_map[P].value += 1; 
+    };
+    map<Prize, cnt>::iterator it = prize_map.begin();
+    while (it != prize_map.end()) {
+        float pcount = (float) (it->second).value/ (float) N;
+        cout.precision(3);
+        cout<<setw(3)<<it->first<<" => "<<setw(3)<<pcount<<endl;
+        it++;
+    };
+};
+
 
 TEST(ActionsTests, Basic) {
     std::vector<int> v1 = {0,};

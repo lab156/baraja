@@ -20,13 +20,19 @@ from scipy.stats import chi2
 # %load_ext autoreload
 # %autoreload 2
 import actions as act
+from collections import Counter
 from baraja import Naipe, Mano, Baraja, Prize
 # #%run ~/code/EfedEquis/Efedequis/poquer/baraja/baraja
 
 # %%time
 b = Baraja()
 b.start_with(map(Naipe,['6D', 'QH', '7H', '7S', '10C']))
-b.evaluate(13, sample_size=5000000)
+#b.evaluate(13, sample_size=5000000)
+prize_counter = Counter()
+for _ in range(1000):
+    prize_counter.update([b.play(13)])
+print(prize_counter.most_common())
+b.approx_best_move(sample_size=300)
 
 # %%time
 b = Baraja()

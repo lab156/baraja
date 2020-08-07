@@ -142,6 +142,7 @@ class Baraja: public std::array<Naipe, 52> {
       void start_with(std::vector<Naipe> card_lst);
       Prize play(int action, int start_at); // start_at = -1 means pick at random
       float evaluate(int action, int samples);
+      int approx_best_move(int samples);
 };
 
 Baraja::Baraja(unsigned int seed_int) {
@@ -220,6 +221,19 @@ float Baraja::evaluate(int hold_action, int samples=1000) {
             }
     }
     return (float) prize_sum/(float) samples; 
+};
+
+int Baraja::approx_best_move(int samples = 500) {
+    int best_action = 0;
+    float temp, tboy;
+    for (int a = 0; a < 32; a++) {
+        temp = this->evaluate(a, samples);
+        if (temp > tboy) {
+            tboy = temp;
+            best_action = a;
+        }
+    }
+    return best_action;
 };
 
 void Baraja::start_with(std::vector<Naipe> card_lst) {
